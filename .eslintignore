@@ -9,3 +9,4 @@ templates/
 src/**/*.svelte
 /index.js
 /index.js.map
+/.vite-cache

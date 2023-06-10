@@ -3,7 +3,6 @@
 		{
 			"discord": "MrVauxs#8622",
 			"email": "mrvauxs@gmail.com",
-			"flags": {},
 			"ko-fi": "MrVauxs",
 			"name": "MrVauxs",
 			"patreon": "MrVauxs",
@@ -35,7 +34,7 @@
 		"requires": [
 			{
 				"compatibility": {
-					"minimum": "1.17.3"
+					"minimum": "1.17.2"
 				},
 				"id": "warpgate",
 				"manifest": "https://github.com/trioderegion/warpgate/releases/latest/download/module.json",
@@ -56,7 +55,7 @@
 	"styles": [
 		"style.css"
 	],
-	"title": "Conjuring Foundry",
+	"title": "Foundry Summons",
 	"url": "https://github.com/mrvauxs/foundry-summons",
 	"version": "0.0.0"
 }

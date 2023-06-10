@@ -1,5 +1,7 @@
 {
 	"foundry-summons": {
-		"title": "Conjuring Foundry"
+		"menu": {
+			"title": "Pick a Creature"
+		}
 	}
 }

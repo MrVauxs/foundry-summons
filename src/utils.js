@@ -15,3 +15,12 @@ export function localize(key, format) {
 	}
 	return game.i18n.localize(key);
 }
+
+/**
+ * Sends out a console log if debug mode is enabled.
+ */
+export function debug() {
+	if (game.settings.get(moduleID, 'debug')) {
+		console.log(moduleID, '|', ...arguments);
+	}
+}

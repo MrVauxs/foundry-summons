@@ -2,6 +2,9 @@
 	"foundry-summons": {
 		"menu": {
 			"title": "Pick a Creature"
+		},
+		"notifications": {
+			"blanks": "Missing Blank Actors. Creating them…"
 		}
 	}
 }

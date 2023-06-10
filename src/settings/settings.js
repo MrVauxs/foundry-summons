@@ -16,7 +16,32 @@ Hooks.on('ready', () => {
 			default: false,
 		},
 	});
+
+	gameSettings.register({
+		namespace: moduleID,
+		key: 'blankNPC',
+		options: {
+			scope: 'world',
+			config: false,
+			type: Array,
+			default: [],
+		},
+	});
+
+	gameSettings.register({
+		namespace: moduleID,
+		key: 'hiddenFolder',
+		options: {
+			scope: 'world',
+			config: false,
+			type: String,
+			default: '',
+		},
+	});
 });
+
+window.foundrySummons = window.foundrySummons || {};
+window.foundrySummons.gameSettings = gameSettings;
 
 Hooks.on('renderSettingsConfig', (app, html) => {
 	const target = html[0].querySelectorAll(`[data-category="${moduleID}"]`)[0];

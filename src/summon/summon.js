@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { debug, localize, moduleID } from '../utils';
 import { openMenu } from './menu/SummoningMenu.js';
+import { createBlanks } from './templateActors/index.js';
 
 /**
  * ============================================
@@ -52,6 +54,7 @@ function summonGM(data) {
 			"Foundry Summons | You don't have permission to do that. How did you run this function?"
 		);
 	debug('Received', data);
+	createBlanks();
 }
 
 /**
@@ -64,7 +67,9 @@ export function summonPC(data = {}) {
 	warpgate.event.notify('fs-summon', data);
 }
 
+window.foundrySummons = window.foundrySummons || {};
 window.foundrySummons = {
+	...(window.foundrySummons || {}),
 	openMenu,
 	summonPC,
 	summonGM,

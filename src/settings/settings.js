@@ -4,7 +4,7 @@ import { moduleID } from '../utils';
 
 export const gameSettings = new TJSGameSettings(moduleID);
 
-Hooks.on('ready', () => {
+Hooks.once('ready', () => {
 	gameSettings.register({
 		namespace: moduleID,
 		key: 'debug',
@@ -38,6 +38,33 @@ Hooks.on('ready', () => {
 			default: '',
 		},
 	});
+
+	gameSettings.register({
+		namespace: moduleID,
+		key: 'sources',
+		options: {
+			scope: 'world',
+			config: false,
+			type: Array,
+			default: 'none',
+		},
+	});
+});
+
+Hooks.once('ready', () => {
+	if (game.settings.get(moduleID, 'sources') === 'none') {
+		switch (game.system.id) {
+			case 'dnd5e':
+				game.settings.set(moduleID, 'sources', ['PHB']);
+				break;
+			case 'pf2e':
+				game.settings.set(moduleID, 'sources', ['CompendiumBrowser']);
+				break;
+			default:
+				game.settings.set(moduleID, 'sources', ['']);
+				break;
+		}
+	}
 });
 
 window.foundrySummons = window.foundrySummons || {};

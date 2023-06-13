@@ -1,5 +1,15 @@
 {
+	"title": "Foundry Summons",
 	"id": "foundry-summons",
+	"description": "A Summoning Module.",
+	"version": "0.0.0",
+	"esmodules": [
+		"index.js"
+	],
+	"styles": [
+		"style.css"
+	],
+	"socket": true,
 	"authors": [
 		{
 			"discord": "MrVauxs#8622",
@@ -10,15 +20,12 @@
 			"twitter": "@ThatVauxs"
 		}
 	],
-	"bugs": "https://github.com/mrvauxs/foundry-summons/issues",
-	"changelog": "https://github.com/mrvauxs/foundry-summons/releases/latest/",
 	"compatibility": {
 		"minimum": "11",
 		"verified": "11"
 	},
-	"description": "A Summoning Module.",
+	"manifest": "https://github.com/mrvauxs/foundry-summons/releases/latest/download/module.json",
 	"download": "https://github.com/mrvauxs/foundry-summons/releases/latest/download/module.zip",
-	"esmodules": ["index.js"],
 	"languages": [
 		{
 			"lang": "en",
@@ -26,8 +33,6 @@
 			"path": "lang/en.json"
 		}
 	],
-	"manifest": "https://github.com/mrvauxs/foundry-summons/releases/latest/download/module.json",
-	"readme": "https://github.com/mrvauxs/foundry-summons/blob/master/README.md",
 	"relationships": {
 		"requires": [
 			{
@@ -49,9 +54,8 @@
 			}
 		]
 	},
-	"socket": true,
-	"styles": ["style.css"],
-	"title": "Foundry Summons",
+	"readme": "https://github.com/mrvauxs/foundry-summons/blob/master/README.md",
 	"url": "https://github.com/mrvauxs/foundry-summons",
-	"version": "0.0.0"
+	"bugs": "https://github.com/mrvauxs/foundry-summons/issues",
+	"changelog": "https://github.com/mrvauxs/foundry-summons/releases/latest/"
 }

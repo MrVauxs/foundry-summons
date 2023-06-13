@@ -29,6 +29,9 @@ export function localize(key, format) {
  */
 export function debug() {
 	if (game.settings.get(moduleID, 'debug')) {
-		console.log('Foundry Summons | ', ...arguments);
+		if (arguments) {
+			console.log('Foundry Summons |', ...arguments);
+		}
+		return true;
 	}
 }

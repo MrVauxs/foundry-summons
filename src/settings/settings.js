@@ -1,6 +1,6 @@
 import { TJSGameSettings } from '@typhonjs-fvtt/svelte-standard/store';
 import Svelttings from './settings.svelte';
-import { moduleID } from '../utils';
+import { debug, moduleID } from '../utils';
 
 export const gameSettings = new TJSGameSettings(moduleID);
 
@@ -49,21 +49,48 @@ Hooks.once('ready', () => {
 			default: 'none',
 		},
 	});
+
+	gameSettings.register({
+		namespace: moduleID,
+		key: 'onlyImages',
+		options: {
+			scope: 'world',
+			config: false,
+			type: Boolean,
+			default: false,
+		},
+	});
 });
+
+export function selectDefaultSources() {
+	switch (game.system.id) {
+		case 'dnd5e': {
+			game.settings.set(moduleID, 'sources', ['PHB']);
+			break;
+		}
+		case 'pf2e': {
+			const array = game.packs.contents
+				.filter((pack) => pack.metadata.type === 'Actor')
+				.map((x) => x.metadata)
+				.filter((x) =>
+					Object.keys(game.pf2e.compendiumBrowser.settings.bestiary)
+						.filter((key) => game.pf2e.compendiumBrowser.settings.bestiary[key].load)
+						.includes(x.id)
+				);
+
+			game.settings.set(moduleID, 'sources', array);
+			break;
+		}
+		default: {
+			game.settings.set(moduleID, 'sources', ['']);
+			break;
+		}
+	}
+}
 
 Hooks.once('ready', () => {
 	if (game.settings.get(moduleID, 'sources') === 'none') {
-		switch (game.system.id) {
-			case 'dnd5e':
-				game.settings.set(moduleID, 'sources', ['PHB']);
-				break;
-			case 'pf2e':
-				game.settings.set(moduleID, 'sources', ['CompendiumBrowser']);
-				break;
-			default:
-				game.settings.set(moduleID, 'sources', ['']);
-				break;
-		}
+		selectDefaultSources();
 	}
 });
 

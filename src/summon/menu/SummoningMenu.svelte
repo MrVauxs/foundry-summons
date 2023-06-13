@@ -16,7 +16,7 @@
 
 <ApplicationShell bind:elementRoot>
 	<main>
-		<div>Select a Token who's Summoning:</div>
+		<div><p class="text-2xl">Select a Token who's Summoning:</p></div>
 		<div>
 			<ul>
 				{#each Array(60) as opt}

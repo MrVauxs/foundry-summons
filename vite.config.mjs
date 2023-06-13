@@ -19,7 +19,7 @@ const s_PACKAGE_ID = 'modules/foundry-summons';
 // A short additional string to add to Svelte CSS hash values to make yours unique. This reduces the amount of
 // duplicated framework CSS overlap between many TRL packages enabled on Foundry VTT at the same time. 'tse' is chosen
 // by shortening 'template-svelte-esm'.
-const s_SVELTE_HASH_ID = 'conjureFoundry';
+const s_SVELTE_HASH_ID = 'fsummons';
 
 const s_COMPRESS = true; // Set to true to compress the module bundle.
 const s_SOURCEMAPS = true; // Generate sourcemaps for the bundle (recommended).
@@ -63,13 +63,13 @@ export default () => {
 			open: '/game',
 			proxy: {
 				// Serves static files from main Foundry server.
-				[`^(/${s_PACKAGE_ID}/(assets|lang|packs|style.css))`]: 'http://localhost:29999',
+				[`^(/${s_PACKAGE_ID}/(assets|lang|packs|style.css))`]: 'http://localhost:30011',
 
 				// All other paths besides package ID path are served from main Foundry server.
-				[`^(?!/${s_PACKAGE_ID}/)`]: 'http://localhost:29999',
+				[`^(?!/${s_PACKAGE_ID}/)`]: 'http://localhost:30011',
 
 				// Enable socket.io from main Foundry server.
-				'/socket.io': { target: 'ws://localhost:29999', ws: true },
+				'/socket.io': { target: 'ws://localhost:30011', ws: true },
 			},
 		},
 

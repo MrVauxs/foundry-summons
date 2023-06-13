@@ -6,11 +6,11 @@ import defaultBlanks from './default.js';
  *
  * @returns {void} Creates the blank actors, ready for summoning.
  */
-export function createBlanks() {
+export async function createBlanks() {
 	switch (game.system.id) {
 		case 'pf2e':
-			return pf2e();
+			return await pf2e();
 		default:
-			return defaultBlanks();
+			return await defaultBlanks();
 	}
 }

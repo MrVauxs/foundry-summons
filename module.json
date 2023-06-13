@@ -1,4 +1,5 @@
 {
+	"id": "foundry-summons",
 	"authors": [
 		{
 			"discord": "MrVauxs#8622",
@@ -17,10 +18,7 @@
 	},
 	"description": "A Summoning Module.",
 	"download": "https://github.com/mrvauxs/foundry-summons/releases/latest/download/module.zip",
-	"esmodules": [
-		"index.js"
-	],
-	"id": "foundry-summons",
+	"esmodules": ["index.js"],
 	"languages": [
 		{
 			"lang": "en",
@@ -52,9 +50,7 @@
 		]
 	},
 	"socket": true,
-	"styles": [
-		"style.css"
-	],
+	"styles": ["style.css"],
 	"title": "Foundry Summons",
 	"url": "https://github.com/mrvauxs/foundry-summons",
 	"version": "0.0.0"

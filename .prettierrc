@@ -9,12 +9,8 @@
 			}
 		}
 	],
-	"pluginSearchDirs": [
-		"."
-	],
-	"plugins": [
-		"prettier-plugin-svelte"
-	],
+	"pluginSearchDirs": ["."],
+	"plugins": ["svelte", "prettier-plugin-svelte"],
 	"printWidth": 120,
 	"semi": true,
 	"singleQuote": true,

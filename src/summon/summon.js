@@ -38,40 +38,32 @@ import { createBlanks } from './templateActors/index.js';
  */
 
 Hooks.on('ready', () => {
-	warpgate.event.watch('fs-summon', summonGM, warpgate.util.isFirstGM);
+	warpgate.event.watch('fs-summon', summon, warpgate.util.isFirstGM);
 });
 
 /**
  * Summons a creature using GM permissions.
+ * Can, or at least should only be ran by the GM.
  *
  * @param {object} data - The data to summon the creature.
  *
  * @returns {void} Summons the Creature on the Scene
  */
-function summonGM(data) {
+async function summon(data) {
 	if (!game.user.isGM)
-		return ui.notifications.error(
-			"Foundry Summons | You don't have permission to do that. How did you run this function?"
-		);
-	debug('Received', data);
-	createBlanks();
-}
+		return ui.notifications.error(`Foundry Summons | ${localize('fs.notifications.error.permission')}`);
+	debug('Received Summon Data', data);
 
-/**
- * Send a request to the GM to summon a creature.
- *
- * @param {object} data - The data to send to the GM.
- */
-export function summonPC(data = {}) {
-	debug('Sending', data);
-	warpgate.event.notify('fs-summon', data);
+	// We need Actors to overwrite, so make sure they exist first.
+	createBlanks();
+
+	// Then, proceed.
 }
 
 window.foundrySummons = window.foundrySummons || {};
 window.foundrySummons = {
 	...(window.foundrySummons || {}),
 	openMenu,
-	summonPC,
-	summonGM,
+	summon,
 	debug,
 };

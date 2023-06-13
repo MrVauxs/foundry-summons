@@ -4,7 +4,10 @@
 			"title": "Pick a Creature"
 		},
 		"notifications": {
-			"blanks": "Missing Blank Actors. Creating them…"
+			"blanks": "Missing Blank Actors. Creating them…",
+			"error": {
+				"permission": "You don't have permission to do that. How did you run this function?"
+			}
 		}
 	}
 }

@@ -12,14 +12,14 @@
 		"eslint-config-prettier": "^8.8.0",
 		"eslint-plugin-prettier": "^4.2.1",
 		"eslint-plugin-svelte": "^2.30.0",
-		"prettier": "^2.8.8",
-		"prettier-plugin-svelte": "^2.10.1",
 		"svelte": "^3.59.1"
 	},
 	"devDependencies": {
 		"@typhonjs-config/eslint-config": "^0.6.0",
 		"@typhonjs-fvtt/eslint-config-foundry.js": "^0.8.0",
 		"eslint": "^8",
+		"prettier": "^2.8.8",
+		"prettier-plugin-svelte": "^2.10.1",
 		"svelte-preprocess": "^5",
 		"vite": "^4"
 	},

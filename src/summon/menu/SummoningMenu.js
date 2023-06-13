@@ -19,8 +19,9 @@ export default class SummoningApplication extends SvelteApplication {
 /**
  * Opens the summoning menu with all the options.
  *
+ * TODO: Type-ify the props.
  * @param {object} props - The props to pass to the Svelte component.
  */
-export function openMenu(props = { filters: {}, sources: {}, options: {} }) {
-	new SummoningApplication().render(true, { focus: true, svelte: { props } });
+export function openMenu(props) {
+	new SummoningApplication().render(true, { focus: true, svelte: { data: props } });
 }

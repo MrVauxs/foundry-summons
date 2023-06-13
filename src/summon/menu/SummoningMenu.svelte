@@ -2,15 +2,21 @@
 
 <script>
 	import { ApplicationShell } from '@typhonjs-fvtt/runtime/svelte/component/core';
+	import { debug, localize, moduleID } from '../../utils.js';
 	export let elementRoot;
-	export let filters, sources, options;
+	export let data;
 
-	console.log(filters, sources, options);
+	console.log(data);
+
+	function send() {
+		debug('Sending', data);
+		warpgate.event.notify('fs-summon', data);
+	}
 </script>
 
 <ApplicationShell bind:elementRoot>
 	<main>
-		<div>Hell</div>
+		<div>Select a Token who's Summoning:</div>
 		<div>
 			<ul>
 				{#each Array(60) as opt}

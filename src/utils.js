@@ -10,17 +10,25 @@ export const moduleID = 'foundry-summons';
  * @returns {string} The localized string
  */
 export function localize(key, format) {
+	if (key.startsWith('fs')) {
+		key = key.replace('fs.', 'foundry-summons.');
+	}
 	if (format) {
 		return game.i18n.format(key, format);
+	} else {
+		return game.i18n.localize(key);
 	}
-	return game.i18n.localize(key);
 }
 
 /**
  * Sends out a console log if debug mode is enabled.
+ *
+ * @param {any} args - The arguments to log
+ *
+ * @returns {void}
  */
 export function debug() {
 	if (game.settings.get(moduleID, 'debug')) {
-		console.log(moduleID, '|', ...arguments);
+		console.log('Foundry Summons | ', ...arguments);
 	}
 }

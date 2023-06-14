@@ -15,7 +15,6 @@
 		"svelte": "^3.59.1"
 	},
 	"devDependencies": {
-		"@league-of-foundry-developers/foundry-vtt-types": "^9.280.0",
 		"@typhonjs-config/eslint-config": "^0.6.0",
 		"@typhonjs-fvtt/eslint-config-foundry.js": "^0.8.0",
 		"eslint": "^8",

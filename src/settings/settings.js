@@ -1,6 +1,7 @@
 import { TJSGameSettings } from '@typhonjs-fvtt/svelte-standard/store';
 import Svelttings from './settings.svelte';
 import { debug, moduleID } from '../utils';
+import registerSystemSettings from './systemSpecific';
 
 export const gameSettings = new TJSGameSettings(moduleID);
 
@@ -60,6 +61,19 @@ Hooks.once('ready', () => {
 			default: false,
 		},
 	});
+
+	gameSettings.register({
+		namespace: moduleID,
+		key: 'autoAccept',
+		options: {
+			scope: 'world',
+			config: false,
+			type: Boolean,
+			default: false,
+		},
+	});
+
+	registerSystemSettings();
 });
 
 export function selectDefaultSources() {

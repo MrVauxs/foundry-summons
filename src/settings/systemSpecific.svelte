@@ -1,11 +1,10 @@
 <script>
 	import { debug } from '../utils';
-	import { selectDefaultSources } from './settings.js';
 	export let gameSettings;
 
-	const uncommonAllowance = gameSettings.getStore('uncommonAllowance');
+	const noUncommon = gameSettings.getStore('noUncommon');
 
-	$: debug('Uncommon Allowance', $uncommonAllowance);
+	$: debug('Uncommon Allowance', $noUncommon);
 </script>
 
 <!-- svelte-ignore missing-declaration -->
@@ -14,7 +13,7 @@
 {#if game.system.id === 'pf2e'}
 	<div class="setting">
 		<div class="right">
-			<input type="checkbox" bind:checked={$uncommonAllowance} />
+			<input type="checkbox" bind:checked={$noUncommon} />
 		</div>
 		<p>Disallow Uncommon and rarer Creatures</p>
 		<p class="notes">Uncommon and rarer options are filtered out of the Summoning Menu.</p>

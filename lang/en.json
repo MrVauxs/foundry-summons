@@ -5,7 +5,10 @@
 		},
 		"notifications": {
 			"blanks": "Missing Blank Actors. Creating them…",
+			"loadingPack": "Loading Pack {pack}",
+			"loadingComplete": "Loading Complete",
 			"error": {
+				"loadingPack": "Error loading pack \"{pack}\", does it exist?",
 				"permission": "You don't have permission to do that. How did you run this function?"
 			}
 		}

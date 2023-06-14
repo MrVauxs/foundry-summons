@@ -1,6 +1,6 @@
 <script>
 	import { debug } from '../utils';
-	import { selectDefaultSources } from './settings.js';
+	import { selectDefaultSources } from './systemSpecific.js';
 	import SystemSpecific from './systemSpecific.svelte';
 
 	export let gameSettings;

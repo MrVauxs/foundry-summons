@@ -1,7 +1,7 @@
 import { TJSGameSettings } from '@typhonjs-fvtt/svelte-standard/store';
 import Svelttings from './settings.svelte';
 import { debug, moduleID } from '../utils';
-import registerSystemSettings from './systemSpecific';
+import { registerSystemSettings, selectDefaultSources } from './systemSpecific';
 
 export const gameSettings = new TJSGameSettings(moduleID);
 
@@ -73,38 +73,27 @@ Hooks.once('ready', () => {
 		},
 	});
 
+	gameSettings.register({
+		namespace: moduleID,
+		key: 'systemVersion',
+		options: {
+			scope: 'world',
+			config: false,
+			type: String,
+			default: '',
+		},
+	});
+
 	registerSystemSettings();
 });
 
-export function selectDefaultSources() {
-	switch (game.system.id) {
-		case 'dnd5e': {
-			game.settings.set(moduleID, 'sources', ['PHB']);
-			break;
-		}
-		case 'pf2e': {
-			const array = game.packs.contents
-				.filter((pack) => pack.metadata.type === 'Actor')
-				.map((x) => x.metadata)
-				.filter((x) =>
-					Object.keys(game.pf2e.compendiumBrowser.settings.bestiary)
-						.filter((key) => game.pf2e.compendiumBrowser.settings.bestiary[key].load)
-						.includes(x.id)
-				);
-
-			game.settings.set(moduleID, 'sources', array);
-			break;
-		}
-		default: {
-			game.settings.set(moduleID, 'sources', ['']);
-			break;
-		}
-	}
-}
-
 Hooks.once('ready', () => {
-	if (game.settings.get(moduleID, 'sources') === 'none') {
+	if (
+		game.settings.get(moduleID, 'sources') === 'none' ||
+		game.settings.get(moduleID, 'systemVersion') !== game.system.version
+	) {
 		selectDefaultSources();
+		game.settings.set(moduleID, 'systemVersion', game.system.version);
 	}
 });
 

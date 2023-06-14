@@ -4,6 +4,8 @@
 	import { ApplicationShell } from '@typhonjs-fvtt/runtime/svelte/component/core';
 	import { writable } from 'svelte/store';
 	import { debug, localize, moduleID } from '../../utils.js';
+	import loadPacks from './components/loadPacks.js';
+	import { onMount } from 'svelte';
 	export let elementRoot;
 	export let data = {
 		tokens: [
@@ -25,12 +27,20 @@
 		console.log('Creature', $creature);
 	}
 
+	onMount(async () => {
+		data.creatures = await loadPacks();
+	});
+
 	let token = writable(data.tokens[0]);
 	let creature = writable('');
 
 	function send(options = { token: $token, creature: $creature }) {
 		debug('Sending', options);
 		warpgate.event.notify('fs-summon', options);
+	}
+
+	function openImage(actor) {
+		new ImagePopout(actor.img, { title: actor.name, uuid: actor.uuid }).render(true);
 	}
 </script>
 
@@ -71,6 +81,7 @@
 							on:click={() => ($creature = opt.uuid)}
 							on:keypress={() => ($creature = opt.uuid)}
 						>
+							<img src={opt.img} alt={opt.name} loading="lazy" on:click={openImage(opt)} />
 							{opt.name}
 						</div>
 					</li>
@@ -95,6 +106,22 @@
 		box-shadow: revert;
 		&:hover {
 			box-shadow: inset 0 0 0 200px #006cc41c;
+		}
+
+		img {
+			clear: left;
+			float: left;
+			height: 100%;
+			width: 50px;
+			object-fit: cover;
+
+			box-sizing: border-box;
+			border: 1px solid var(--color-border-dark);
+			border-radius: 2px;
+
+			&:hover {
+				box-shadow: inset 0 0 0 200px #0300c42c;
+			}
 		}
 	}
 

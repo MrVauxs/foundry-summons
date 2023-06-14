@@ -1,7 +1,7 @@
 import { TJSGameSettings } from '@typhonjs-fvtt/svelte-standard/store';
 import Svelttings from './settings.svelte';
 import { debug, moduleID } from '../utils';
-import { registerSystemSettings, selectDefaultSources } from './systemSpecific';
+import { registerSystemSettings, selectDefaultSources, setDefaultIndexFields } from './systemSpecific';
 
 export const gameSettings = new TJSGameSettings(moduleID);
 
@@ -75,12 +75,12 @@ Hooks.once('ready', () => {
 
 	gameSettings.register({
 		namespace: moduleID,
-		key: 'systemVersion',
+		key: 'indexFields',
 		options: {
 			scope: 'world',
 			config: false,
-			type: String,
-			default: '',
+			type: Array,
+			default: "none",
 		},
 	});
 
@@ -88,12 +88,12 @@ Hooks.once('ready', () => {
 });
 
 Hooks.once('ready', () => {
-	if (
-		game.settings.get(moduleID, 'sources') === 'none' ||
-		game.settings.get(moduleID, 'systemVersion') !== game.system.version
-	) {
+	if (game.settings.get(moduleID, 'sources') === 'none') {
 		selectDefaultSources();
-		game.settings.set(moduleID, 'systemVersion', game.system.version);
+	}
+
+	if (game.settings.get(moduleID, 'indexFields') === 'none') {
+		setDefaultIndexFields();
 	}
 });
 

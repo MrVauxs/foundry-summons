@@ -3,38 +3,28 @@
 <script>
 	import { ApplicationShell } from '@typhonjs-fvtt/runtime/svelte/component/core';
 	import { writable } from 'svelte/store';
+	import loadPacks from './loadPacks.js';
 	import { debug, localize, moduleID } from '../../utils.js';
-	import loadPacks from './components/loadPacks.js';
-	import { onMount } from 'svelte';
 	export let elementRoot;
-	export let data = {
-		tokens: [
-			{ uuid: 'fake Id', name: 'Test' },
-			{ uuid: 'fake Id 2', name: 'Test 2' },
-		],
-		creatures: [
-			{ uuid: 'fake Id', name: 'Test' },
-			{ uuid: 'fake Id 2', name: 'Test 2' },
-			{ uuid: 'fake Id 3', name: 'Test 3' },
-			{ uuid: 'fake Id 4', name: 'Test 4' },
-		],
-		filters: [],
-	};
+	export let data;
 
-	$: {
-		console.log('Data', data);
-		console.log('Token', $token);
-		console.log('Creature', $creature);
-	}
+	data = foundry.utils.mergeObject(
+		{
+			tokens: canvas.tokens.ownedTokens,
+			creatures: loadPacks(),
+			filters: [],
+		},
+		data
+	);
 
-	onMount(async () => {
-		data.creatures = await loadPacks();
-	});
+	const token = writable(data?.tokens?.[0]);
+	const creature = writable('');
+	const currentFilters = writable(data.filters ?? []);
+	const search = writable('');
+	const amount = writable(1);
 
-	let token = writable(data.tokens[0]);
-	let creature = writable('');
-
-	function send(options = { token: $token, creature: $creature }) {
+	function send() {
+		const options = { token: $token, creature: $creature };
 		debug('Sending', options);
 		warpgate.event.notify('fs-summon', options);
 	}
@@ -42,22 +32,42 @@
 	function openImage(actor) {
 		new ImagePopout(actor.img, { title: actor.name, uuid: actor.uuid }).render(true);
 	}
+
+	function filterCreatures(creatures, filters, search) {
+		let filtered = creatures.filter((x) => x.name.toLowerCase().includes(search.toLowerCase()));
+		filters
+			.filter((x) => !x.disabled || x.locked)
+			.forEach((filter) => {
+				filtered = filter.function(filtered);
+			});
+		return filtered;
+	}
 </script>
 
 <ApplicationShell bind:elementRoot>
 	<main>
 		<div>
-			<div>
-				<p>Current filters affecting your summon selection:</p>
-				{#if data.filters.length === 0}
-					<p>None! You have <b>Full Access</b>.</p>
-				{/if}
-				<ul>
-					{#each data.filters as filter}
-						<li>{filter}</li>
+			{#if $currentFilters.length}
+				<div>
+					<p>Current filters affecting your summon selection:</p>
+					{#each $currentFilters
+						.sort((b, a) => a.locked ?? false - b.locked ?? false)
+						.filter((x) => !x.hidden) as filter}
+						<!-- svelte-ignore a11y-click-events-have-key-events -->
+						<div
+							class="option"
+							class:locked={filter.locked}
+							class:disabled={filter.disabled}
+							on:click={() => (!filter.locked ? (filter.disabled = !filter.disabled) : filter)}
+						>
+							{#if filter.locked}
+								<span class="fas fa-lock" />
+							{/if}
+							{filter.name}
+						</div>
 					{/each}
-				</ul>
-			</div>
+				</div>
+			{/if}
 			<div>
 				<label for="token">Select the Summoning Token:</label>
 				<select id="token" name="token" type="dropdown" placeholder="Select a Token" bind:value={$token}>
@@ -68,28 +78,43 @@
 			</div>
 			<div>
 				<label for="number">How Many Creatures:</label>
-				<input type="number" id="number" min="1" value="1" />
+				<input type="number" id="number" min="1" bind:value={$amount} />
 			</div>
 		</div>
 		<div>
+			<input type="text" class="search" bind:value={$search} />
 			<ul>
-				{#each data.creatures as opt}
-					<li>
-						<div
-							class="option"
-							class:selected={$creature === opt.uuid}
-							on:click={() => ($creature = opt.uuid)}
-							on:keypress={() => ($creature = opt.uuid)}
-						>
-							<img src={opt.img} alt={opt.name} loading="lazy" on:click={openImage(opt)} />
-							{opt.name}
-						</div>
-					</li>
-				{/each}
+				{#await data.creatures}
+					<p>Loading Creatures...</p>
+				{:then creatures}
+					{#each filterCreatures(creatures, $currentFilters, $search) as opt}
+						<li>
+							<!-- svelte-ignore a11y-click-events-have-key-events -->
+							<div
+								class="option"
+								class:selected={$creature.uuid === opt.uuid}
+								on:click={() => ($creature = opt)}
+							>
+								<img
+									src={opt.img}
+									alt={opt.name}
+									loading="lazy"
+									on:keypress={openImage(opt)}
+									on:click={openImage(opt)}
+								/>
+								<p class="name">
+									{opt.name}
+								</p>
+							</div>
+						</li>
+					{/each}
+				{:catch error}
+					<p>Something went wrong: {error.message}</p>
+				{/await}
 			</ul>
 		</div>
 	</main>
-	<button on:click={send}> Submit </button>
+	<button on:click={send}> Summon {$amount} {$creature.name ?? '???'} </button>
 </ApplicationShell>
 
 <style lang="scss">
@@ -101,11 +126,27 @@
 		max-width: 40%;
 	}
 
+	.disabled {
+		opacity: 0.5;
+	}
+
+	.search {
+		position: sticky;
+		top: 0.25rem;
+	}
+
+	.name {
+		padding: 0.25rem 0;
+	}
+
 	.option {
 		height: 100%;
 		box-shadow: revert;
 		&:hover {
 			box-shadow: inset 0 0 0 200px #006cc41c;
+			&.locked {
+				box-shadow: inset 0 0 0 200px #00192e1c;
+			}
 		}
 
 		img {

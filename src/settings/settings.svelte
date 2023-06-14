@@ -1,6 +1,6 @@
 <script>
 	import { debug } from '../utils';
-	import { selectDefaultSources } from './systemSpecific.js';
+	import { selectDefaultSources, setDefaultIndexFields } from './systemSpecific.js';
 	import SystemSpecific from './systemSpecific.svelte';
 
 	export let gameSettings;
@@ -8,13 +8,18 @@
 	const sources = gameSettings.getStore('sources');
 	const onlyImages = gameSettings.getStore('onlyImages');
 	const autoAccept = gameSettings.getStore('autoAccept');
+	const indexFields = gameSettings.getStore('indexFields');
 	const packs = game.packs.contents.filter((pack) => pack.metadata.type === 'Actor');
 
 	let lastPick;
+	let indexFieldString = $indexFields.toString();
+
+	$: $indexFields = indexFieldString.split(',').map((x) => x.trim());
 
 	$: debug('Sources', $sources);
 	$: debug('Only Images', $onlyImages);
 	$: debug('Auto Accept', $autoAccept);
+	$: debug('Index Fields', $indexFields);
 
 	function addToList(source, event) {
 		if (event?.shiftKey && lastPick) {
@@ -60,7 +65,9 @@
 				</div>
 			{/each}
 		</div>
-		<p>Summoning Sources</p>
+		<p>
+			Summoning Sources {#if debug()}(sources){/if}
+		</p>
 		<p class="notes">Select the sources you want to be available in the Summoning Menu.</p>
 		<p class="notes">
 			<b>{$sources?.length}/{packs.length}</b> sources selected.
@@ -87,15 +94,39 @@
 		<div class="right">
 			<input type="checkbox" bind:checked={$onlyImages} />
 		</div>
-		<p>Only Allow Summons With Token Images</p>
+		<p>
+			Only Allow Summons With Token Images {#if debug()}(onlyImages){/if}
+		</p>
 		<p class="notes">Only creatures that have a token image will be available to summon by default.</p>
 	</div>
 	<div class="setting">
 		<div class="right">
 			<input type="checkbox" bind:checked={$autoAccept} />
 		</div>
-		<p>Automatically Accept Summoning Requests</p>
+		<p>
+			Automatically Accept Summoning Requests {#if debug()}(autoAccept){/if}
+		</p>
 		<p class="notes">The GM no longer will need to accept a Summoning Request from a Player.</p>
+	</div>
+	<div class="setting">
+		<div class="right">
+			<input type="text" bind:value={indexFieldString} class="input" />
+		</div>
+		<p>
+			<i class="fas fa-exclamation-triangle" /> Index Fields {#if debug()}(indexFields){/if}
+		</p>
+		<p class="notes">
+			What fields to index for filtering purposes. Don't modify unless you know what you are doing!
+			<br />
+			<!-- svelte-ignore a11y-missing-attribute -->
+			<a
+				style="color: var(--color-text-hyperlink);"
+				on:click={setDefaultIndexFields}
+				on:keydown={setDefaultIndexFields}
+			>
+				Return to Default.
+			</a>
+		</p>
 	</div>
 	<hr />
 	<div class="system"><SystemSpecific {gameSettings} /></div>
@@ -112,6 +143,13 @@
 	}
 
 	.foundry-summons {
+		:global(.input) {
+			width: 100%;
+			border: 1px solid #5e5e5e;
+			border-radius: 0.25rem;
+			padding: 0.25rem;
+		}
+
 		:global(.system) {
 			box-shadow: inset 0 0 0 200px rgba(180, 50, 210, 0.1), 0 0 1rem 10px rgba(180, 50, 210, 0.1);
 		}

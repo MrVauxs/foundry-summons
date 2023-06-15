@@ -146,8 +146,8 @@ async function summon(data) {
 		}
 	}
 
-	const x = data.location.x - data.location.distance * canvas.grid.size + 50;
-	const y = data.location.y - data.location.distance * canvas.grid.size + 50;
+	const x = data.location.x; //  - data.location.distance * canvas.grid.size
+	const y = data.location.y;
 
 	debug('Summoning', actorName, 'at', x, y, 'with', updates, callbacks, options);
 

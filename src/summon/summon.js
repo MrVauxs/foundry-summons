@@ -52,12 +52,87 @@ Hooks.on('ready', () => {
 async function summon(data) {
 	if (!game.user.isGM)
 		return ui.notifications.error(`Foundry Summons | ${localize('fs.notifications.error.permission')}`);
-	debug('Received Summon Data', data);
+	debug('Received', data);
 
 	// We need Actors to overwrite, so make sure they exist first.
 	createBlanks();
 
 	// Then, proceed.
+
+	console.log((await fromUuid("Actor." + game.settings.get(moduleID, 'blankNPC')[0].id)))
+
+	let actorName = (await fromUuid("Actor." + game.settings.get(moduleID, 'blankNPC')[0].id)).name;
+
+	const actor = await fromUuid(data.creature.uuid);
+	const token = actor.prototypeToken;
+
+	Object.assign(token.flags, {
+		'foundry-summons': {
+			scrollingText: game.settings.get('core', 'scrollingStatusText'),
+			bloodsplatter: game.modules.get('splatter')?.active
+				? game.settings.get('splatter', 'enableBloodsplatter')
+				: null,
+			'token-mold': game.modules.get('token-mold')?.active
+				? game.settings.get('Token-Mold', 'everyone').name.use
+				: null,
+		},
+	});
+
+	const updates = {
+		token: token.toObject(),
+		actor: actor.toObject()
+	}
+
+	const callbacks = {
+		pre: async (location, updates) => {
+			mergeObject(updates, {
+				token: {
+					alpha: 0,
+				},
+			});
+			await game.settings.set('core', 'scrollingStatusText', false);
+			if (game.modules.get('splatter')?.active) await game.settings.set('splatter', 'enableBloodsplatter', false);
+			if (game.modules.get('token-mold')?.active)
+				await game.settings.set('Token-Mold', 'everyone', {
+					...game.settings.get('Token-Mold', 'everyone'),
+					...{ name: { use: false } },
+				});
+		},
+		post: async (location, spawnedTokenDoc, updates, iteration) => {
+			let defaultVisibility = true;
+			// TODO: Not sure if I should call or callAll...
+			Hooks.callAll('fs-summoned', location, spawnedTokenDoc, updates, iteration, defaultVisibility)
+
+			if (updates.token.flags['foundry-summons']?.scrollingText)
+				await game.settings.set('core', 'scrollingStatusText', true);
+			if (updates.token.flags['foundry-summons']?.bloodsplatter)
+				await game.settings.set('splatter', 'enableBloodsplatter', true);
+			if (updates.token.flags['foundry-summons']?.tokenmold)
+				await game.settings.set('Token-Mold', 'everyone', {
+					...game.settings.get('Token-Mold', 'everyone'),
+					...{ name: { use: true } },
+				});
+
+			setTimeout(() => {
+				spawnedTokenDoc.update({
+					alpha: 1,
+				})
+			}, 1000)
+		},
+	};
+
+	const options = {}
+
+	switch (game.system.id) {
+		case 'pf2e': {
+			actorName = (await fromUuid("Actor." + game.settings.get(moduleID, 'blankNPC').find(x => x.size === (actor.size)).id)).name;
+			break;
+		}
+	}
+
+	debugger;
+
+	warpgate.spawnAt(data.location, actorName, updates, callbacks, options)
 }
 
 window.foundrySummons = window.foundrySummons || {};

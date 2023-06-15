@@ -6,6 +6,9 @@
 	import loadPacks from './loadPacks.js';
 	import { debug, localize, moduleID, deduplicate } from '../../utils.js';
 	import defaultFilters from './defaultFilters.js';
+	import { getContext } from 'svelte';
+	const { application } = getContext('#external');
+
 	export let elementRoot;
 	export let data;
 
@@ -13,7 +16,9 @@
 		{
 			tokens: canvas.tokens.ownedTokens,
 			creatures: loadPacks(),
+			amount: { value: 1, locked: false },
 			filters: defaultFilters(),
+			location: null,
 			options: {},
 		},
 		data
@@ -25,15 +30,62 @@
 	}
 
 	const token = writable(data?.tokens?.[0]);
-	const creature = writable('');
+	const creature = writable({});
 	const currentFilters = writable(data.filters ?? []);
 	const search = writable('');
-	const amount = writable(1);
+	const amount = writable(data.amount.value);
 
-	function send() {
-		const options = { token: $token, creature: $creature };
+	async function send() {
+		let location = data.location;
+
+		if (!location) {
+			const importedToken = (await fromUuid($creature.uuid)).prototypeToken;
+
+			const crosshairConfig = {
+				label: importedToken.name,
+				interval: importedToken.height < 1 ? 4 : importedToken.height % 2 === 0 ? 1 : -1,
+				lockSize: true,
+				drawOutline: false,
+				drawIcon: false,
+			};
+
+			let crosshairShow;
+
+			if (game.modules.get('sequencer'))
+				crosshairShow = {
+					show: async (crosshair) => {
+						new Sequence('Foundry Summons')
+							.effect()
+							.file(importedToken.texture.src)
+							.attachTo(crosshair)
+							.persist()
+							.scaleToObject(importedToken.height * importedToken.texture.scaleX)
+							.opacity(0.5)
+							.play();
+					},
+				};
+
+			application.minimize();
+			const crosshairs = await warpgate.crosshairs.show(crosshairConfig, crosshairShow);
+			if (crosshairs.cancelled) {
+				application.maximize();
+				return;
+			}
+
+			location = (
+				await canvas.scene.createEmbeddedDocuments('MeasuredTemplate', [
+					{
+						...crosshairs,
+						distance: (importedToken.height / 2) * canvas.scene.grid.distance,
+					},
+				])
+			)[0];
+		}
+
+		const options = { token: $token, creature: $creature, amount: $amount, location };
 		debug('Sending', options);
 		warpgate.event.notify('fs-summon', options);
+		application.close();
 	}
 
 	function openImage(actor) {
@@ -86,8 +138,11 @@
 				</select>
 			</div>
 			<div>
-				<label for="number">How Many Creatures:</label>
-				<input type="number" id="number" min="1" bind:value={$amount} />
+				{#if data.amount.locked}
+					<span class="fas fa-lock disabled" />
+				{/if}
+				<label for="number" class:disabled={data.amount.locked}>How Many Creatures:</label>
+				<input type="number" id="number" min="1" bind:value={$amount} disabled={data.amount.locked} />
 			</div>
 		</div>
 		<div>
@@ -125,7 +180,9 @@
 			</ul>
 		</div>
 	</main>
-	<button on:click={send}> Summon {$amount} {$creature.name ?? '???'} </button>
+	<button on:click={send} disabled={!$creature}>
+		Summon {$creature.name ? `${$amount} ${$creature.name}` : ''}
+	</button>
 </ApplicationShell>
 
 <style lang="scss">

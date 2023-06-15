@@ -1,7 +1,9 @@
 import { gameSettings } from './settings.js';
 import { moduleID } from '../utils';
 
-// Register system specific settings.
+/**
+ * Register system specific settings.
+ */
 export function registerSystemSettings() {
 	switch (game.system.id) {
 		case 'pf2e': {
@@ -21,7 +23,9 @@ export function registerSystemSettings() {
 	}
 }
 
-// What sources to load when loading packs.
+/**
+ * What sources to load when loading packs.
+ */
 export function selectDefaultSources() {
 	switch (game.system.id) {
 		case 'dnd5e': {
@@ -53,7 +57,9 @@ export function selectDefaultSources() {
 	}
 }
 
-// What properties to index when loading packs.
+/**
+ * What properties to index when loading packs.
+ */
 export function setDefaultIndexFields() {
 	switch (game.system.id) {
 		case 'dnd5e': {

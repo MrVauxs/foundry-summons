@@ -1,5 +1,14 @@
 import { moduleID, localize, Progress } from '../../utils';
 
+/**
+ * Loads and Indexes Compendiums.
+ *
+ * @param {boolean} refresh - Redo everything.
+ *
+ * @param {Array} packs - Optional array of packs to load. Defaults to all packs in settings.
+ *
+ * @returns {Array} An array of indexed creatures.
+ */
 export default async function loadPacks(refresh = false, packs = game.settings.get(moduleID, 'sources')) {
 	const progress = new Progress({ steps: packs.length });
 
@@ -26,11 +35,11 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 				const systemPath = game.pf2e.system.moduleArt;
 				await systemPath.refresh();
 
-				packIndex.map((c) => {
-					const actorArt = systemPath.map.get(c.uuid)?.img;
-					c.img = actorArt ?? c.img;
-					if (c.img === '') c.img = 'icons/svg/mystery-man.svg';
-					return c;
+				packIndex.map((x) => {
+					const actorArt = systemPath.map.get(x.uuid)?.img;
+					x.img = actorArt ?? x.img;
+					if (x.img === '') x.img = 'icons/svg/mystery-man.svg';
+					return x;
 				});
 
 				break;
@@ -39,11 +48,11 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 				const systemPath = game.dnd5e.moduleArt;
 				await systemPath.registerModuleArt();
 
-				packIndex.map((c) => {
-					const actorArt = systemPath.map.get(c.uuid)?.img;
-					c.img = actorArt ?? c.img;
-					if (c.img === '') c.img = 'icons/svg/mystery-man.svg';
-					return c;
+				packIndex.map((x) => {
+					const actorArt = systemPath.map.get(x.uuid)?.img;
+					x.img = actorArt ?? x.img;
+					if (x.img === '') x.img = 'icons/svg/mystery-man.svg';
+					return x;
 				});
 
 				break;

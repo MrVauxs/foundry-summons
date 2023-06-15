@@ -1,6 +1,7 @@
 import { TJSGameSettings } from '@typhonjs-fvtt/svelte-standard/store';
 import Svelttings from './settings.svelte';
-import { debug, moduleID } from '../utils';
+import { moduleID } from '../utils';
+import { createBlanks } from './templateActors/index.js';
 import { registerSystemSettings, selectDefaultSources, setDefaultIndexFields } from './systemSpecific';
 
 export const gameSettings = new TJSGameSettings(moduleID);
@@ -95,6 +96,8 @@ Hooks.once('ready', () => {
 	if (game.settings.get(moduleID, 'indexFields') === 'none') {
 		setDefaultIndexFields();
 	}
+
+	createBlanks();
 });
 
 window.foundrySummons = window.foundrySummons || {};

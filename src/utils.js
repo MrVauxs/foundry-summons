@@ -37,6 +37,25 @@ export function debug() {
 }
 
 /**
+ * Removes duplicates from an array of objects based on a key.
+ * @example deduplicate(items, (item) => item.id));
+ * @param {array} array
+ * @param {function} getKey
+ * @returns
+ */
+export function deduplicate(array, getKey) {
+	const seenItems = {};
+	return array.filter((item) => {
+		const key = getKey(item);
+		if (seenItems[key]) {
+			return false;
+		}
+		seenItems[key] = true;
+		return true;
+	});
+}
+
+/**
  * Stolen from the PF2e system.
  *
  * Quick and dirty API around the Loading bar.
@@ -61,4 +80,3 @@ export class Progress {
 		SceneNavigation.displayProgressBar({ label, pct: 100 });
 	}
 }
-

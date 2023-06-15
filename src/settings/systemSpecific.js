@@ -25,7 +25,12 @@ export function registerSystemSettings() {
 export function selectDefaultSources() {
 	switch (game.system.id) {
 		case 'dnd5e': {
-			game.settings.set(moduleID, 'sources', ['PHB']);
+			const array = game.packs.contents
+				.filter((pack) => pack.metadata.type === 'Actor')
+				.map((x) => x.metadata)
+				.filter((x) => x.name === 'monsters');
+
+			game.settings.set(moduleID, 'sources', array);
 			break;
 		}
 		case 'pf2e': {
@@ -52,7 +57,7 @@ export function selectDefaultSources() {
 export function setDefaultIndexFields() {
 	switch (game.system.id) {
 		case 'dnd5e': {
-			game.settings.set(moduleID, 'indexFields', ['']);
+			game.settings.set(moduleID, 'indexFields', ['img']);
 			break;
 		}
 		case 'pf2e': {

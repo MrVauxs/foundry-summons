@@ -80,7 +80,7 @@ Hooks.once('ready', () => {
 			scope: 'world',
 			config: false,
 			type: Array,
-			default: "none",
+			default: 'none',
 		},
 	});
 

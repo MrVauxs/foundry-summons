@@ -4,7 +4,8 @@
 	import { ApplicationShell } from '@typhonjs-fvtt/runtime/svelte/component/core';
 	import { writable } from 'svelte/store';
 	import loadPacks from './loadPacks.js';
-	import { debug, localize, moduleID } from '../../utils.js';
+	import { debug, localize, moduleID, deduplicate } from '../../utils.js';
+	import defaultFilters from './defaultFilters.js';
 	export let elementRoot;
 	export let data;
 
@@ -12,10 +13,16 @@
 		{
 			tokens: canvas.tokens.ownedTokens,
 			creatures: loadPacks(),
-			filters: [],
+			filters: defaultFilters(),
+			options: {},
 		},
 		data
 	);
+
+	if (data.options.defaultFilters) {
+		data.filters.push(...defaultFilters());
+		data.filters = deduplicate(data.filters, (filter) => filter.name);
+	}
 
 	const token = writable(data?.tokens?.[0]);
 	const creature = writable('');
@@ -63,7 +70,9 @@
 							{#if filter.locked}
 								<span class="fas fa-lock" />
 							{/if}
-							{filter.name}
+							<span>
+								{filter.name}
+							</span>
 						</div>
 					{/each}
 				</div>
@@ -82,7 +91,9 @@
 			</div>
 		</div>
 		<div>
-			<input type="text" class="search" bind:value={$search} />
+			<div class="search">
+				<input type="text" bind:value={$search} />
+			</div>
 			<ul>
 				{#await data.creatures}
 					<p>Loading Creatures...</p>
@@ -133,6 +144,8 @@
 	.search {
 		position: sticky;
 		top: 0.25rem;
+		background: #ffffff40;
+		backdrop-filter: blur(10px);
 	}
 
 	.name {
@@ -142,10 +155,14 @@
 	.option {
 		height: 100%;
 		box-shadow: revert;
+		&.locked {
+			opacity: 0.6;
+		}
+
 		&:hover {
 			box-shadow: inset 0 0 0 200px #006cc41c;
 			&.locked {
-				box-shadow: inset 0 0 0 200px #00192e1c;
+				box-shadow: none;
 			}
 		}
 

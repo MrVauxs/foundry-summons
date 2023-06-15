@@ -128,8 +128,7 @@
 			</a>
 		</p>
 	</div>
-	<hr />
-	<div class="system"><SystemSpecific {gameSettings} /></div>
+	<SystemSpecific {gameSettings} />
 </div>
 
 <style lang="scss">

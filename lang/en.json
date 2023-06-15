@@ -1,7 +1,9 @@
 {
 	"foundry-summons": {
 		"menu": {
-			"title": "Pick a Creature"
+			"title": "Pick a Creature",
+			"onlyImages": "Only Creatures with Images",
+			"noUncommon": "Only Common Creatures"
 		},
 		"notifications": {
 			"blanks": "Missing Blank Actors. Creating them…",

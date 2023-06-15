@@ -30,4 +30,6 @@ export default async function createBlanks() {
 			game.settings.set(moduleID, 'blankNPC', blankNPCs);
 		});
 	}
+
+	return true;
 }

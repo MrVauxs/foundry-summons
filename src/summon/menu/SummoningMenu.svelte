@@ -29,7 +29,7 @@
 		data.filters = deduplicate(data.filters, (filter) => filter.name);
 	}
 
-	const token = writable(data?.tokens?.[0]);
+	const token = writable(canvas.tokens.controlled[0] ?? data?.tokens?.[0]);
 	const creature = writable({});
 	const currentFilters = writable(data.filters ?? []);
 	const search = writable('');
@@ -82,7 +82,12 @@
 			)[0];
 		}
 
-		const options = { token: $token, creature: $creature, amount: $amount, location };
+		const options = {
+			summonerTokenDocument: $token?.document?.toObject(),
+			creatureActor: $creature,
+			amount: $amount,
+			location,
+		};
 		debug('Sending', options);
 		warpgate.event.notify('fs-summon', options);
 		application.close();

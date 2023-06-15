@@ -77,4 +77,6 @@ export default async function createBlanks() {
 			});
 		});
 	}
+
+	return true;
 }

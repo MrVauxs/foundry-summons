@@ -56,7 +56,7 @@ async function summon(data) {
 	// Then we can proceed.
 	let actorName = (await fromUuid(`Actor.${game.settings.get(moduleID, 'blankNPC')[0].id}`)).name;
 
-	const actor = await fromUuid(data.creatureActor.uuid);
+	const actor = await data.creatureActor.loadDocument();
 	const token = actor.prototypeToken;
 
 	Object.assign(token.flags, {
@@ -133,13 +133,17 @@ async function summon(data) {
 		},
 	};
 
-	const options = {};
+	const options = { duplicates: data.amount };
 
 	switch (game.system.id) {
 		case 'pf2e': {
 			actorName = (
 				await fromUuid(
-					`Actor.${game.settings.get(moduleID, 'blankNPC').find((blank) => blank.size === actor.size).id}`
+					`Actor.${
+						game.settings
+							.get(moduleID, 'blankNPC')
+							.find((blank) => blank.size === actor.size || blank.size === 'med').id
+					}`
 				)
 			).name;
 			break;

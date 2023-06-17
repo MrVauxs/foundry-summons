@@ -18,7 +18,7 @@ export default function defaultFilters() {
 	if (game.system.id === 'pf2e' && game.settings.get(moduleID, 'noUncommon')) {
 		filterArray.push({
 			name: localize('fs.menu.noUncommon'),
-			function: (creatures) => creatures.filter((x) => x.system.traits.rarity !== 'common'),
+			function: (creatures) => creatures.filter((x) => x.system.traits.rarity === 'common'),
 			locked: true,
 		});
 	}

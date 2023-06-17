@@ -6,7 +6,7 @@
 	import loadPacks from './loadPacks.js';
 	import { debug, localize, moduleID, deduplicate } from '../../utils.js';
 	import defaultFilters from './defaultFilters.js';
-	import { getContext } from 'svelte';
+	import { getContext, onMount } from 'svelte';
 	const { application } = getContext('#external');
 
 	export let elementRoot;
@@ -99,11 +99,13 @@
 
 	function filterCreatures(creatures, filters, search) {
 		let filtered = creatures.filter((x) => x.name.toLowerCase().includes(search.toLowerCase()));
+
 		filters
 			.filter((x) => !x.disabled || x.locked)
 			.forEach((filter) => {
 				filtered = filter.function(filtered);
 			});
+
 		return filtered;
 	}
 </script>
@@ -158,27 +160,32 @@
 				{#await data.creatures}
 					<p>Loading Creatures...</p>
 				{:then creatures}
-					{#each filterCreatures(creatures, $currentFilters, $search) as opt}
-						<li>
-							<!-- svelte-ignore a11y-click-events-have-key-events -->
-							<div
-								class="option"
-								class:selected={$creature.uuid === opt.uuid}
-								on:click={() => ($creature = opt)}
-							>
-								<img
-									src={opt.img}
-									alt={opt.name}
-									loading="lazy"
-									on:keypress={openImage(opt)}
-									on:click={openImage(opt)}
-								/>
-								<p class="name">
-									{opt.name}
-								</p>
-							</div>
-						</li>
-					{/each}
+					{@const filteredCreatures = filterCreatures(creatures, $currentFilters, $search)}
+					{#if filteredCreatures.length === 0}
+						<p>No creatures found.</p>
+					{:else}
+						{#each filteredCreatures as opt}
+							<li>
+								<!-- svelte-ignore a11y-click-events-have-key-events -->
+								<div
+									class="option"
+									class:selected={$creature.uuid === opt.uuid}
+									on:click={() => ($creature = opt)}
+								>
+									<img
+										src={opt.img}
+										alt={opt.name}
+										loading="lazy"
+										on:keypress={openImage(opt)}
+										on:click={openImage(opt)}
+									/>
+									<p class="name">
+										{opt.name}
+									</p>
+								</div>
+							</li>
+						{/each}
+					{/if}
 				{:catch error}
 					<p>Something went wrong: {error.message}</p>
 				{/await}

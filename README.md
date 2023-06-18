@@ -19,3 +19,9 @@ Built in Svelte using TyphonJS Framework for Foundry.
 | fs-pre-summon | Gets called before the token is summoned, allowing you to modify it before being put on the board | [Link](https://github.com/MrVauxs/foundry-summons/blob/8eb1315c8da299f33d492b90f61b0645eadef479/src/summon/summon.js#L124) |
 | fs-post-summon | Gets called after the token is summoned, allowing you to create your own entrance animations as the token starts off invisible | [Link](https://github.com/MrVauxs/foundry-summons/blob/8eb1315c8da299f33d492b90f61b0645eadef479/src/summon/summon.js#LL156C3-L156C3) | 
 | fs-loadingPacks | Gets called when creating the creature index, allowing you to add your own custom data to it | [Link](https://github.com/MrVauxs/foundry-summons/blob/8eb1315c8da299f33d492b90f61b0645eadef479/src/summon/menu/loadPacks.js#L68) |
+
+### Preview
+
+https://github.com/MrVauxs/foundry-summons/assets/32039708/baa11499-8999-49d8-99a5-1ca2f2f79b3d
+
+![image](https://github.com/MrVauxs/foundry-summons/assets/32039708/889a419d-b5fd-4757-8360-2d73ce07dd5c)

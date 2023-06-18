@@ -50,22 +50,6 @@
 				"manifest": "https://github.com/trioderegion/warpgate/releases/latest/download/module.json",
 				"type": "module"
 			}
-		],
-		"systems": [
-			{
-				"compatibility": {
-					"minimum": "5.0.0"
-				},
-				"id": "pf2e",
-				"type": "system"
-			},
-			{
-				"compatibility": {
-					"minimum": "2.2.1"
-				},
-				"id": "dnd5e",
-				"type": "system"
-			}
 		]
 	},
 	"packs": [

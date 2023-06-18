@@ -6,8 +6,8 @@
 [![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Ffoundry-summons&colorB=4aa94a)](https://forge-vtt.com/bazaar#package=pf2e-jb2a-macros)
 [![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Ffoundry-summons%2Fshield%2Fendorsements)](https://www.foundryvtt-hub.com/package/foundry-summons/)
 
-An all-in-one solution to all your summoning needs.
+An all-in-one solution to all your summoning needs with NO need to import Actors to place them on the map!
+
+Easily expandable with Hooks, and system-inclusive. Should work on any system. Just grab the macro from the compendium and start summoning!
 
 Built in Svelte using TyphonJS Framework for Foundry.
-
-Expandable with Hooks, and system-inclusive.

@@ -3,10 +3,11 @@ import Svelttings from './settings.svelte';
 import { moduleID } from '../utils';
 import { createBlanks } from './templateActors/index.js';
 import { registerSystemSettings, selectDefaultSources, setDefaultIndexFields } from './systemSpecific';
+import { get } from 'svelte/store';
 
 export const gameSettings = new TJSGameSettings(moduleID);
 
-Hooks.once('ready', () => {
+Hooks.once('init', () => {
 	gameSettings.register({
 		namespace: moduleID,
 		key: 'debug',
@@ -100,11 +101,18 @@ Hooks.once('ready', () => {
 	createBlanks();
 });
 
-window.foundrySummons = window.foundrySummons || {};
-window.foundrySummons.gameSettings = gameSettings;
-
 Hooks.on('renderSettingsConfig', (app, html) => {
 	const target = html[0].querySelectorAll(`[data-category="${moduleID}"]`)[0];
 	const anchor = target.getElementsByClassName('form-group')[0];
 	new Svelttings({ target, anchor, props: { gameSettings } });
 });
+
+Hooks.on('renderActorDirectory', (app, html) => {
+	if (!game.settings.get(moduleID, 'debug')) {
+		const folder = html.find(`.folder[data-folder-id="${game.settings.get(moduleID, 'hiddenFolder')}"]`);
+		folder.remove();
+	}
+});
+
+window.foundrySummons = window.foundrySummons || {};
+window.foundrySummons.gameSettings = gameSettings;

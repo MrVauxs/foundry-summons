@@ -8,7 +8,8 @@
 
 An all-in-one solution to all your summoning needs with NO need to import Actors to place them on the map!
 
-Easily expandable with Hooks, and system-inclusive. Should work on any system. Just grab the macro from the compendium and start summoning!
+Easily expandable with Hooks, and system-inclusive. Should work on any system. 
+Just grab the **macro** from the compendium and start summoning!
 
 Built in Svelte using TyphonJS Framework for Foundry.
 

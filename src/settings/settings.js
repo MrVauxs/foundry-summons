@@ -89,11 +89,13 @@ Hooks.once('init', () => {
 });
 
 Hooks.once('ready', () => {
-	if (game.settings.get(moduleID, 'sources') === 'none') {
+	if (game.settings.get(moduleID, 'sources').includes('none')) {
+		console.log('Foundry Summons | Selecting default sources');
 		selectDefaultSources();
 	}
 
-	if (game.settings.get(moduleID, 'indexFields') === 'none') {
+	if (game.settings.get(moduleID, 'indexFields').includes('none')) {
+		console.log('Foundry Summons | Selecting default index fields');
 		setDefaultIndexFields();
 	}
 

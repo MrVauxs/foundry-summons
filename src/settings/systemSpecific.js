@@ -34,7 +34,7 @@ export function selectDefaultSources() {
 				.map((x) => x.metadata)
 				.filter((x) => x.name === 'monsters');
 
-			game.settings.set(moduleID, 'sources', array);
+			gameSettings.getStore('sources').set(array);
 			break;
 		}
 		case 'pf2e': {
@@ -47,11 +47,11 @@ export function selectDefaultSources() {
 						.includes(x.id)
 				);
 
-			game.settings.set(moduleID, 'sources', array);
+			gameSettings.getStore('sources').set(array);
 			break;
 		}
 		default: {
-			game.settings.set(moduleID, 'sources', ['']);
+			gameSettings.getStore('sources').set(['']);
 			break;
 		}
 	}
@@ -63,15 +63,15 @@ export function selectDefaultSources() {
 export function setDefaultIndexFields() {
 	switch (game.system.id) {
 		case 'dnd5e': {
-			game.settings.set(moduleID, 'indexFields', ['img']);
+			gameSettings.getStore('indexFields').set(['img']);
 			break;
 		}
 		case 'pf2e': {
-			game.settings.set(moduleID, 'indexFields', game.pf2e.compendiumBrowser.tabs.bestiary.index);
+			gameSettings.getStore('indexFields').set(game.pf2e.compendiumBrowser.tabs.bestiary.index);
 			break;
 		}
 		default: {
-			game.settings.set(moduleID, 'indexFields', ['']);
+			gameSettings.getStore('indexFields').set(['']);
 			break;
 		}
 	}

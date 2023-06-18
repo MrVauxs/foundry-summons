@@ -53,6 +53,21 @@ async function summon(data) {
 		return ui.notifications.error(`Foundry Summons | ${localize('fs.notifications.error.permission')}`);
 	debug('Received', data);
 
+	if (!game.settings.get(moduleID, 'autoAccept') && !(game.user.id === data.userId)) {
+		// If the GM has auto accept disabled, we need to ask them if they want to summon the creature.
+		const summoning = await Dialog.prompt({
+			title: 'Player Summon Request',
+			content: `${game.user.get(data.userId)} wants to summon ${data.amount ? data.amount : 'a'} ${
+				data.creatureActor.name
+			}. Do you accept?`,
+			label: 'Yes',
+			callback: () => {
+				return true;
+			},
+		});
+		if (!summoning) return;
+	}
+
 	// Then we can proceed.
 	let actorName = (await fromUuid(`Actor.${game.settings.get(moduleID, 'blankNPC')[0].id}`)).name;
 
@@ -98,6 +113,8 @@ async function summon(data) {
 					...{ name: { use: false } },
 				});
 			}
+
+			Hooks.callAll('fs-pre-summon', { location: _location, updates: _updates, sourceData: data });
 		},
 		post: async function (_location, _spawnedTokenDoc, _updates, _iteration) {
 			// Remove scrolling text if effects or hp are modified.
@@ -118,7 +135,7 @@ async function summon(data) {
 				});
 			}
 
-			Hooks.once('fs-summoned', () => {
+			Hooks.once('fs-post-summon', () => {
 				setTimeout(() => {
 					_spawnedTokenDoc.update({
 						alpha: 1,
@@ -129,7 +146,13 @@ async function summon(data) {
 				return false;
 			});
 
-			Hooks.call('fs-summoned', { _location, _spawnedTokenDoc, _updates, _iteration });
+			Hooks.call('fs-post-summon', {
+				location: _location,
+				tokenDoc: _spawnedTokenDoc,
+				updates: _updates,
+				iteration: _iteration,
+				sourceData: data,
+			});
 		},
 	};
 
@@ -142,10 +165,20 @@ async function summon(data) {
 					`Actor.${
 						game.settings
 							.get(moduleID, 'blankNPC')
-							.find((blank) => blank.size === actor.size || blank.size === 'med').id
+							.find((blank) => (actor.size === 'sm' ? blank.size === 'med' : blank.size === actor.size))
+							.id
 					}`
 				)
 			).name;
+
+			updates.actor.system.details.alliance = (
+				await fromUuid(`Actor.${data.summonerTokenDocument.actorId}`)
+			).system.details.alliance;
+
+			// Delete token width and height to use the default size of
+			// our tokens because PF2e Bestiaries rely a bit TOO MUCH on auto-scaling.
+			updates.token.width = undefined;
+			updates.token.height = undefined;
 			break;
 		}
 	}
@@ -153,7 +186,17 @@ async function summon(data) {
 	const x = data.location.x; //  - data.location.distance * canvas.grid.size
 	const y = data.location.y;
 
-	debug('Summoning', actorName, 'at', x, y, 'with', updates, callbacks, options);
+	debug(
+		`Summoning${options.duplicates ? ` ${options.duplicates}` : ''}`,
+		actorName,
+		'at',
+		x,
+		y,
+		'with',
+		updates,
+		callbacks,
+		options
+	);
 
 	warpgate
 		.spawnAt(

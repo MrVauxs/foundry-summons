@@ -3,8 +3,12 @@
 	"id": "foundry-summons",
 	"description": "A Summoning Module.",
 	"version": "0.0.0",
-	"esmodules": ["index.js"],
-	"styles": ["style.css"],
+	"esmodules": [
+		"index.js"
+	],
+	"styles": [
+		"style.css"
+	],
 	"socket": true,
 	"authors": [
 		{
@@ -18,7 +22,9 @@
 	],
 	"flags": {
 		"hotReload": {
-			"extensions": [".json"]
+			"extensions": [
+				".json"
+			]
 		}
 	},
 	"compatibility": {
@@ -62,6 +68,18 @@
 			}
 		]
 	},
+	"packs": [
+		{
+			"name": "macros",
+			"label": "Foundry Summons Macros",
+			"path": "packs/macros",
+			"type": "Macro",
+			"banner": "modules/foundry-summons/assets/banner.webp",
+			"ownership": {
+				"PLAYER": "OWNER"
+			}
+		}
+	],
 	"readme": "https://github.com/mrvauxs/foundry-summons/blob/master/README.md",
 	"url": "https://github.com/mrvauxs/foundry-summons",
 	"bugs": "https://github.com/mrvauxs/foundry-summons/issues",

@@ -30,7 +30,7 @@
 	}
 
 	const token = writable(canvas.tokens.controlled[0] ?? data?.tokens?.[0]);
-	const creature = writable({});
+	const creature = writable();
 	const currentFilters = writable(data.filters ?? []);
 	const search = writable('');
 	const amount = writable(data.amount.value);
@@ -169,7 +169,7 @@
 								<!-- svelte-ignore a11y-click-events-have-key-events -->
 								<div
 									class="option"
-									class:selected={$creature.uuid === opt.uuid}
+									class:selected={$creature?.uuid === opt.uuid}
 									on:click={() => ($creature = opt)}
 								>
 									<img
@@ -193,7 +193,7 @@
 		</div>
 	</main>
 	<button on:click={send} disabled={!$creature}>
-		Summon {$creature.name ? `${$amount} ${$creature.name}` : ''}
+		Summon {$creature?.name ? `${$amount} ${$creature?.name}` : ''}
 	</button>
 </ApplicationShell>
 

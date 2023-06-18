@@ -29,7 +29,7 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 			continue;
 		}
 
-		const packIndex = await packData.getIndex({ fields: game.settings.get(moduleID, 'indexFields') });
+		let packIndex = await packData.getIndex({ fields: game.settings.get(moduleID, 'indexFields') });
 
 		// Module Art Support (PF2e Token Bestiary and such)
 		// Don't change this apparently otherwise the images don't load.
@@ -38,7 +38,7 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 				const systemPath = game.pf2e.system.moduleArt;
 				await systemPath.refresh();
 
-				packIndex.map((x) => {
+				packIndex = packIndex.map((x) => {
 					const actorArt = systemPath.map.get(x.uuid)?.img;
 					x.img = actorArt ?? x.img;
 					if (x.img === '') x.img = 'icons/svg/mystery-man.svg';
@@ -51,7 +51,7 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 				const systemPath = game.dnd5e.moduleArt;
 				await systemPath.registerModuleArt();
 
-				packIndex.map((x) => {
+				packIndex = packIndex.map((x) => {
 					const actorArt = systemPath.map.get(x.uuid)?.img;
 					x.img = actorArt ?? x.img;
 					if (x.img === '') x.img = 'icons/svg/mystery-man.svg';
@@ -62,7 +62,7 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 			}
 		}
 
-		packIndex.map((indexItem) => new DocWrapper(indexItem));
+		packIndex = packIndex.map((indexItem) => new DocWrapper(indexItem));
 
 		// Allow third parties to add more stuff to the index
 		Hooks.callAll('fs-loadingPacks', index);

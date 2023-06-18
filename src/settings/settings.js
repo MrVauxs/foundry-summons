@@ -3,7 +3,6 @@ import Svelttings from './settings.svelte';
 import { moduleID } from '../utils';
 import { createBlanks } from './templateActors/index.js';
 import { registerSystemSettings, selectDefaultSources, setDefaultIndexFields } from './systemSpecific';
-import { get } from 'svelte/store';
 
 export const gameSettings = new TJSGameSettings(moduleID);
 
@@ -14,7 +13,7 @@ Hooks.once('init', () => {
 		options: {
 			scope: 'world',
 			config: true,
-			name: 'Debug Mode',
+			name: 'foundry-summons.settings.debug.title',
 			type: Boolean,
 			default: false,
 		},

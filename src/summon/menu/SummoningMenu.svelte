@@ -87,6 +87,7 @@
 			creatureActor: $creature,
 			amount: $amount,
 			location,
+			flags: data.flags ?? {},
 		};
 		debug('Sending', options);
 		warpgate.event.notify('fs-summon', options);

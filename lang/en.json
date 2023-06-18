@@ -5,6 +5,11 @@
 			"onlyImages": "Only Creatures with Images",
 			"noUncommon": "Only Common Creatures"
 		},
+		"dialog": {
+			"title": "Summoning Request",
+			"request": "{player} wants to summon {amount} {creature}. Do you accept?",
+			"accept": "Accept"
+		},
 		"notifications": {
 			"blanks": "Missing Blank Actors. Creating them…",
 			"loadingPack": "Loading Pack {pack}",
@@ -12,6 +17,35 @@
 			"error": {
 				"loadingPack": "Error loading pack \"{pack}\", does it exist?",
 				"permission": "You don't have permission to do that. How did you run this function?"
+			}
+		},
+		"settings": {
+			"noUncommon": {
+				"title": "Disallow Uncommon and rarer Creatures",
+				"description": "Uncommon and rarer options are filtered out of the Summoning Menu."
+			},
+			"sources": {
+				"title": "Summoning Sources",
+				"description": "Select the sources you want to be available in the Summoning Menu.",
+				"default": "Return to Default.",
+				"removeAll": "Remove All.",
+				"selected": "<b>{count}/{total}</b> sources selected."
+			},
+			"debug": {
+				"title": "Debug Mode"
+			},
+			"onlyImages": {
+				"title": "Only Allow Summons With Token Images",
+				"description": "Only creatures that have a token image will be available to summon by default."
+			},
+			"autoAccept": {
+				"title": "Automatically Accept Summoning Requests",
+				"description": "The GM no longer will need to accept a Summoning Request from a Player."
+			},
+			"indexFields": {
+				"title": "Index Fields",
+				"description": "What fields to index for filtering purposes. Don't modify unless you know what you are doing!",
+				"default": "Return to Default."
 			}
 		}
 	}

@@ -1,5 +1,5 @@
 <script>
-	import { debug } from '../utils';
+	import { debug, localize } from '../utils';
 	import { selectDefaultSources, setDefaultIndexFields } from './systemSpecific.js';
 	import SystemSpecific from './systemSpecific.svelte';
 
@@ -66,18 +66,19 @@
 			{/each}
 		</div>
 		<p>
-			Summoning Sources {#if debug()}(sources){/if}
+			{localize('fs.settings.sources.title')}
+			{#if debug()}(sources){/if}
 		</p>
-		<p class="notes">Select the sources you want to be available in the Summoning Menu.</p>
+		<p class="notes">{localize('fs.settings.sources.description')}</p>
 		<p class="notes">
-			<b>{$sources?.length}/{packs.length}</b> sources selected.
+			{@html `${localize('fs.settings.sources.selected', { count: $sources?.length, total: packs.length })}`}
 			<!-- svelte-ignore a11y-missing-attribute -->
 			<a
 				style="color: var(--color-text-hyperlink);"
 				on:click={selectDefaultSources}
 				on:keydown={selectDefaultSources}
 			>
-				Return to Default.
+				{localize('fs.settings.sources.default')}
 			</a>
 			<!-- svelte-ignore a11y-missing-attribute -->
 			<a
@@ -85,7 +86,7 @@
 				on:click={() => ($sources = [])}
 				on:keydown={() => ($sources = [])}
 			>
-				Remove All.
+				{localize('fs.settings.sources.removeAll')}
 			</a>
 		</p>
 	</div>
@@ -95,28 +96,32 @@
 			<input type="checkbox" bind:checked={$onlyImages} />
 		</div>
 		<p>
-			Only Allow Summons With Token Images {#if debug()}(onlyImages){/if}
+			{localize('fs.settings.onlyImages.title')}
+			{#if debug()}(onlyImages){/if}
 		</p>
-		<p class="notes">Only creatures that have a token image will be available to summon by default.</p>
+		<p class="notes">{localize('fs.settings.onlyImages.description')}</p>
 	</div>
 	<div class="setting">
 		<div class="right">
 			<input type="checkbox" bind:checked={$autoAccept} />
 		</div>
 		<p>
-			Automatically Accept Summoning Requests {#if debug()}(autoAccept){/if}
+			{localize('fs.settings.autoAccept.title')}
+			{#if debug()}(autoAccept){/if}
 		</p>
-		<p class="notes">The GM no longer will need to accept a Summoning Request from a Player.</p>
+		<p class="notes">{localize('fs.settings.autoAccept.description')}</p>
 	</div>
 	<div class="setting">
 		<div class="right">
 			<input type="text" bind:value={indexFieldString} class="input" />
 		</div>
 		<p>
-			<i class="fas fa-exclamation-triangle" /> Index Fields {#if debug()}(indexFields){/if}
+			<i class="fas fa-exclamation-triangle" />
+			{localize('fs.settings.indexFields.title')}
+			{#if debug()}(indexFields){/if}
 		</p>
 		<p class="notes">
-			What fields to index for filtering purposes. Don't modify unless you know what you are doing!
+			{localize('fs.settings.indexFields.description')}
 			<br />
 			<!-- svelte-ignore a11y-missing-attribute -->
 			<a
@@ -124,7 +129,7 @@
 				on:click={setDefaultIndexFields}
 				on:keydown={setDefaultIndexFields}
 			>
-				Return to Default.
+				{localize('fs.settings.indexFields.default')}
 			</a>
 		</p>
 	</div>

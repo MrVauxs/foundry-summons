@@ -53,19 +53,26 @@ async function summon(data) {
 		return ui.notifications.error(`Foundry Summons | ${localize('fs.notifications.error.permission')}`);
 	debug('Received', data);
 
-	if (!game.settings.get(moduleID, 'autoAccept') && !(game.user.id === data.userId)) {
+	if (
+		game.settings.get(moduleID, 'debug') ||
+		(!game.settings.get(moduleID, 'autoAccept') && !(game.user.id === data.userId))
+	) {
 		// If the GM has auto accept disabled, we need to ask them if they want to summon the creature.
-		const summoning = await Dialog.prompt({
-			title: 'Player Summon Request',
-			content: `${game.user.get(data.userId)} wants to summon ${data.amount ? data.amount : 'a'} ${
-				data.creatureActor.name
-			}. Do you accept?`,
-			label: 'Yes',
-			callback: () => {
-				return true;
-			},
+		const summoning = await Dialog.confirm({
+			title: localize('fs.dialog.title'),
+			content: localize('fs.dialog.request', {
+				player: game.users.get(data.userId).name,
+				amount: data.amount,
+				creature: data.creatureActor.name,
+			}),
+			label: localize('fs.dialog.accept'),
 		});
-		if (!summoning) return;
+		if (!summoning) {
+			if (data.location?.constructor?.name.includes('MeasuredTemplate')) {
+				data.location.delete();
+			}
+			return;
+		}
 	}
 
 	// Then we can proceed.
@@ -156,7 +163,7 @@ async function summon(data) {
 		},
 	};
 
-	const options = { duplicates: data.amount };
+	const options = { duplicates: data.amount, flags: data.flags };
 
 	switch (game.system.id) {
 		case 'pf2e': {

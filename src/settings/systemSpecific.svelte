@@ -1,5 +1,5 @@
 <script>
-	import { debug } from '../utils';
+	import { debug, localize } from '../utils';
 	export let gameSettings;
 
 	const noUncommon = gameSettings.getStore('noUncommon');
@@ -17,9 +17,10 @@
 				<input type="checkbox" bind:checked={$noUncommon} />
 			</div>
 			<p>
-				Disallow Uncommon and rarer Creatures {#if debug()}(noUncommon){/if}
+				{localize('fs.settings.noUncommon.title')}
+				{#if debug()}(noUncommon){/if}
 			</p>
-			<p class="notes">Uncommon and rarer options are filtered out of the Summoning Menu.</p>
+			<p class="notes">{localize('fs.settings.noUncommon.description')}</p>
 		</div>
 	</div>
 	<!-- {:else if game.system.id === 'dnd5e'} -->

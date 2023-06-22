@@ -1,11 +1,13 @@
 <svelte:options accessors={true} />
 
 <script>
+	import * as systems from './options/index.js';
 	import { ApplicationShell } from '@typhonjs-fvtt/runtime/svelte/component/core';
 	import { writable } from 'svelte/store';
 	import loadPacks from './loadPacks.js';
 	import { debug, localize, moduleID, deduplicate } from '../../utils.js';
 	import defaultFilters from './defaultFilters.js';
+	import defaultSorting from './defaultSorting.js';
 	import { getContext, onMount } from 'svelte';
 	const { application } = getContext('#external');
 
@@ -18,8 +20,12 @@
 			creatures: loadPacks(),
 			amount: { value: 1, locked: false },
 			filters: defaultFilters(),
+			sorting: defaultSorting(),
 			location: null,
-			options: {},
+			options: {
+				defaultFilters: true,
+				defaultSorting: true,
+			},
 		},
 		data
 	);
@@ -29,9 +35,15 @@
 		data.filters = deduplicate(data.filters, (filter) => filter.name);
 	}
 
+	if (data.options.defaultSorting) {
+		data.sorting.push(...defaultSorting());
+		data.sorting = deduplicate(data.sorting, (sort) => sort.name);
+	}
+
 	const token = writable(canvas.tokens.controlled[0] ?? data?.tokens?.[0]);
 	const creature = writable();
 	const currentFilters = writable(data.filters ?? []);
+	const sort = writable();
 	const search = writable('');
 	const amount = writable(data.amount.value);
 
@@ -107,7 +119,7 @@
 				filtered = filter.function(filtered);
 			});
 
-		return filtered;
+		return filtered.sort((a, b) => $sort.function(a, b));
 	}
 </script>
 
@@ -116,7 +128,7 @@
 		<div>
 			{#if $currentFilters.length}
 				<div>
-					<p>Current filters affecting your summon selection:</p>
+					<p>{localize('fs.menu.currentFilters')}</p>
 					{#each $currentFilters
 						.sort((b, a) => a.locked ?? false - b.locked ?? false)
 						.filter((x) => !x.hidden) as filter}
@@ -138,7 +150,21 @@
 				</div>
 			{/if}
 			<div>
-				<label for="token">Select the Summoning Token:</label>
+				<label for="sort">{localize('fs.menu.sortedBy')}</label>
+				<select
+					id="sort"
+					name="sort"
+					type="dropdown"
+					placeholder="Select the Sorting Method"
+					bind:value={$sort}
+				>
+					{#each data.sorting as method}
+						<option value={method}>{method.name}</option>
+					{/each}
+				</select>
+			</div>
+			<div>
+				<label for="token">{localize('fs.menu.summonToken')}</label>
 				<select id="token" name="token" type="dropdown" placeholder="Select a Token" bind:value={$token}>
 					{#each data.tokens as token}
 						<option value={token}>{token.name}</option>
@@ -149,52 +175,52 @@
 				{#if data.amount.locked}
 					<span class="fas fa-lock disabled" />
 				{/if}
-				<label for="number" class:disabled={data.amount.locked}>How Many Creatures:</label>
+				<label for="number" class:disabled={data.amount.locked}>{localize('fs.menu.howMany')}</label>
 				<input type="number" id="number" min="1" bind:value={$amount} disabled={data.amount.locked} />
 			</div>
 		</div>
-		<div>
+		<div class="search-options-box">
 			<div class="search">
 				<input type="text" bind:value={$search} />
 			</div>
-			<ul>
-				{#await data.creatures}
-					<p>Loading Creatures...</p>
-				{:then creatures}
-					{@const filteredCreatures = filterCreatures(creatures, $currentFilters, $search)}
-					{#if filteredCreatures.length === 0}
-						<p>No creatures found.</p>
-					{:else}
-						{#each filteredCreatures as opt}
-							<li>
-								<!-- svelte-ignore a11y-click-events-have-key-events -->
-								<div
-									class="option"
-									class:selected={$creature?.uuid === opt.uuid}
-									on:click={() => ($creature = opt)}
-								>
-									<img
-										src={opt.img}
-										alt={opt.name}
-										loading="lazy"
-										on:keypress={openImage(opt)}
-										on:click={openImage(opt)}
-									/>
-									<p class="name">
-										{opt.name}
-									</p>
-								</div>
-							</li>
-						{/each}
-					{/if}
-				{:catch error}
-					<p>Something went wrong: {error.message}</p>
-				{/await}
-			</ul>
+			<div>
+				<ul>
+					{#await data.creatures}
+						<p>{localize('fs.menu.loading')}</p>
+					{:then creatures}
+						{@const filteredCreatures = filterCreatures(creatures, $currentFilters, $search)}
+						{#if filteredCreatures.length === 0}
+							<p>{localize('fs.menu.nothing')}</p>
+						{:else}
+							{#each filteredCreatures as opt}
+								<li>
+									<!-- svelte-ignore a11y-click-events-have-key-events -->
+									<div
+										class="option"
+										class:selected={$creature?.uuid === opt.uuid}
+										on:click={() => ($creature = opt)}
+										on:dblclick={send}
+									>
+										<!-- svelte-ignore missing-declaration -->
+										<svelte:component
+											this={systems[game.system.id] ? systems[game.system.id] : systems.none}
+											creature={opt}
+											{openImage}
+										/>
+									</div>
+								</li>
+							{/each}
+						{/if}
+					{:catch error}
+						<p>{localize('fs.menu.error', { error: error.message })}</p>
+					{/await}
+				</ul>
+			</div>
 		</div>
 	</main>
 	<button on:click={send} disabled={!$creature}>
-		Summon {$creature?.name ? `${$amount} ${$creature?.name}` : ''}
+		{localize('fs.menu.summon')}
+		{$creature?.name ? `${$amount} ${$creature?.name}` : ''}
 	</button>
 </ApplicationShell>
 
@@ -211,18 +237,25 @@
 		opacity: 0.5;
 	}
 
-	.search {
-		position: sticky;
-		top: 0.25rem;
-		background: #ffffff40;
-		backdrop-filter: blur(10px);
+	.search-options-box {
+		display: flex;
+		flex-direction: column;
 	}
 
-	.name {
-		padding: 0.25rem 0;
+	.search {
+		min-height: 2.25rem;
+		height: 2.25rem;
+		max-height: 2.25rem;
+		background: url(../ui/parchment.jpg) repeat;
+
+		input {
+			height: 1.75rem;
+			padding: 0.25rem;
+		}
 	}
 
 	.option {
+		position: relative;
 		height: 100%;
 		box-shadow: revert;
 		&.locked {
@@ -233,22 +266,6 @@
 			box-shadow: inset 0 0 0 200px #006cc41c;
 			&.locked {
 				box-shadow: none;
-			}
-		}
-
-		img {
-			clear: left;
-			float: left;
-			height: 100%;
-			width: 50px;
-			object-fit: cover;
-
-			box-sizing: border-box;
-			border: 1px solid var(--color-border-dark);
-			border-radius: 2px;
-
-			&:hover {
-				box-shadow: inset 0 0 0 200px #0300c42c;
 			}
 		}
 	}
@@ -276,15 +293,17 @@
 	}
 
 	div {
-		overflow-y: scroll;
+		overflow-y: auto;
 		box-shadow: 0 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
 		margin: 0.25rem;
 		border-radius: 0.25rem;
 
-		-ms-overflow-style: none;
-		scrollbar-width: none;
-		&::-webkit-scrollbar {
-			display: none;
+		&.option {
+			-ms-overflow-style: none;
+			scrollbar-width: none;
+			&::-webkit-scrollbar {
+				display: none;
+			}
 		}
 
 		& > div {
@@ -302,6 +321,9 @@
 			background: rgba(255, 255, 255, 0.25);
 			&:nth-child(odd) {
 				background: none;
+			}
+			&:last-child {
+				margin-bottom: 0.25rem;
 			}
 		}
 	}

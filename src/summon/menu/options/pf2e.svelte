@@ -1,0 +1,60 @@
+<script>
+	export let openImage;
+	export let creature;
+
+	console.log(creature);
+</script>
+
+<div class="level" data-tooltip="PF2E.Level{creature.system.details.level.value}">
+	{creature.system.details.level.value}
+</div>
+<img
+	src={creature.img}
+	alt={creature.name}
+	loading="lazy"
+	on:keypress={openImage(creature)}
+	on:click={openImage(creature)}
+/>
+<div class="name">
+	{creature.name}
+</div>
+<div class="traits tags">
+	{#each creature.system.traits.value as trait, i}
+		<span class="tag">
+			{trait}
+		</span>
+	{/each}
+</div>
+
+<style>
+	img {
+		clear: left;
+		float: left;
+		height: 100%;
+		width: 50px;
+		object-fit: cover;
+		object-position: top;
+
+		box-sizing: border-box;
+		border: 1px solid var(--color-border-dark);
+		border-radius: 2px;
+
+		&:hover {
+			box-shadow: inset 0 0 0 200px #0300c42c;
+		}
+	}
+
+	.level {
+		position: absolute;
+		right: 0.125rem;
+		font-size: 2rem;
+	}
+
+	.name {
+		padding: 0.125rem 0;
+	}
+
+	.traits {
+		justify-content: center;
+	}
+</style>

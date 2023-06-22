@@ -3,7 +3,24 @@
 		"menu": {
 			"title": "Pick a Creature",
 			"onlyImages": "Only Creatures with Images",
-			"noUncommon": "Only Common Creatures"
+			"noUncommon": "Only Common Creatures",
+			"sort": {
+				"alphabetical": "Alphabetical",
+				"pf2e": {
+					"level": {
+						"ascending": "Level (Ascending)",
+						"descending": "Level (Descending)"
+					}
+				}
+			},
+			"currentFilters": "Current filters affecting your summon selection:",
+			"sortedBy": "Sorted by:",
+			"summonToken": "Select the Summoning Token:",
+			"howMany": "How Many Creatures:",
+			"loading": "Loading…",
+			"nothing": "No Creatures Found!",
+			"error": "Something went wrong: {error}",
+			"summon": "Summon"
 		},
 		"dialog": {
 			"title": "Summoning Request",

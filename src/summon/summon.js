@@ -37,6 +37,7 @@ import { openMenu } from './menu/SummoningMenu.js';
  */
 
 Hooks.on('ready', () => {
+	if (!game.modules.get('warpgate')?.active) {return ui.notifications.error(localize('fs.notifications.error.warpgate'))};
 	warpgate.event.watch('fs-summon', summon, warpgate.util.isFirstGM);
 });
 

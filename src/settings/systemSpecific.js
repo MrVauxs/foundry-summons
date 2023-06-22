@@ -63,7 +63,7 @@ export function selectDefaultSources() {
 export function setDefaultIndexFields() {
 	switch (game.system.id) {
 		case 'dnd5e': {
-			gameSettings.getStore('indexFields').set(['img']);
+			gameSettings.getStore('indexFields').set(['img', 'system.details.cr']);
 			break;
 		}
 		case 'pf2e': {

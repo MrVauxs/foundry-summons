@@ -11,6 +11,12 @@
 						"ascending": "Level (Ascending)",
 						"descending": "Level (Descending)"
 					}
+				},
+				"5e": {
+					"cr": {
+						"ascending": "CR (Ascending)",
+						"descending": "CR (Descending)"
+					}
 				}
 			},
 			"currentFilters": "Current filters affecting your summon selection:",
@@ -33,7 +39,8 @@
 			"loadingComplete": "Loading Complete",
 			"error": {
 				"loadingPack": "Error loading pack \"{pack}\", does it exist?",
-				"permission": "You don't have permission to do that. How did you run this function?"
+				"permission": "You don't have permission to do that. How did you run this function?",
+				"warpgate": "Warpgate is a REQUIRED dependency of Foundry Summons, please enable it!"
 			}
 		},
 		"settings": {

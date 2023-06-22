@@ -3,6 +3,9 @@
 	export let creature;
 </script>
 
+<div class="cr" data-tooltip="CR {creature.system.details.cr}">
+	{creature.system.details.cr}
+</div>
 <img
 	src={creature.img}
 	alt={creature.name}
@@ -30,6 +33,12 @@
 		&:hover {
 			box-shadow: inset 0 0 0 200px #0300c42c;
 		}
+	}
+
+	.cr {
+		position: absolute;
+		right: 0.125rem;
+		font-size: 2rem;
 	}
 
 	.name {

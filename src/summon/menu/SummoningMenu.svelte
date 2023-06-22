@@ -63,7 +63,7 @@
 
 			let crosshairShow;
 
-			if (game.modules.get('sequencer'))
+			if (game.modules.get('sequencer')?.active)
 				crosshairShow = {
 					show: async (crosshair) => {
 						new Sequence('Foundry Summons')

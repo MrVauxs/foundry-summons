@@ -24,5 +24,16 @@ export default function defaultSorting() {
 		});
 	}
 
+	if (game.system.id === 'dnd5e') {
+		sortingArray.push({
+			name: localize('fs.menu.sort.5e.cr.ascending'),
+			function: (a, b) => a.system.details.cr - b.system.details.cr,
+		});
+		sortingArray.push({
+			name: localize('fs.menu.sort.5e.cr.descending'),
+			function: (b, a) => a.system.details.cr - b.system.details.cr,
+		});
+	}
+
 	return sortingArray;
 }

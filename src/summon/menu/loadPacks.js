@@ -82,6 +82,9 @@ class DocWrapper {
 		Object.assign(this, indexItem);
 	}
 
+	// Regardless of whatever you put here, uuid is still a required field.
+	// Otherwise you fuck up the "selected" styling in the Summoning Menu.
+	// If you aren't using it, at least give it an unique value.
 	async loadDocument() {
 		return await fromUuid(this.uuid);
 	}

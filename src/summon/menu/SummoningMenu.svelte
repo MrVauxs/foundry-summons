@@ -39,7 +39,7 @@
 		let location = data.location;
 
 		if (!location) {
-			const importedToken = (await fromUuid($creature.uuid)).prototypeToken;
+			const importedToken = (await $creature.loadDocument()).prototypeToken;
 
 			const crosshairConfig = {
 				label: importedToken.name,
@@ -56,7 +56,7 @@
 					show: async (crosshair) => {
 						new Sequence('Foundry Summons')
 							.effect()
-							.file(importedToken.texture.src)
+							.file(importedToken?.texture?.src ?? $creature.img)
 							.attachTo(crosshair)
 							.persist()
 							.scaleToObject(importedToken.height * importedToken.texture.scaleX)

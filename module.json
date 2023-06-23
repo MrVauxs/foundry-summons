@@ -27,6 +27,13 @@
 			]
 		}
 	},
+	"media": [
+		{
+			"type": "setup",
+			"name": "Setup Screen",
+			"url": "modules/foundry-summons/assets/setup.webp"
+		}
+	],
 	"compatibility": {
 		"minimum": "11",
 		"verified": "11"

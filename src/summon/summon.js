@@ -37,7 +37,9 @@ import { openMenu } from './menu/SummoningMenu.js';
  */
 
 Hooks.on('ready', () => {
-	if (!game.modules.get('warpgate')?.active) {return ui.notifications.error(localize('fs.notifications.error.warpgate'))};
+	if (!game.modules.get('warpgate')?.active) {
+		return ui.notifications.error(localize('fs.notifications.error.warpgate'));
+	}
 	warpgate.event.watch('fs-summon', summon, warpgate.util.isFirstGM);
 });
 
@@ -122,7 +124,7 @@ async function summon(data) {
 				});
 			}
 
-			Hooks.callAll('fs-pre-summon', { location: _location, updates: _updates, sourceData: data });
+			Hooks.callAll('fs-preSummon', { location: _location, updates: _updates, sourceData: data });
 		},
 		post: async function (_location, _spawnedTokenDoc, _updates, _iteration) {
 			// Remove scrolling text if effects or hp are modified.
@@ -154,7 +156,7 @@ async function summon(data) {
 				return false;
 			});
 
-			Hooks.call('fs-post-summon', {
+			Hooks.call('fs-postSummon', {
 				location: _location,
 				tokenDoc: _spawnedTokenDoc,
 				updates: _updates,

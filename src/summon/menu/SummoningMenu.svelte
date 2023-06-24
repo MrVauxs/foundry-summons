@@ -16,7 +16,7 @@
 
 	data = foundry.utils.mergeObject(
 		{
-			tokens: canvas.tokens.ownedTokens,
+			sourceTokens: canvas.tokens.ownedTokens,
 			creatures: loadPacks(),
 			amount: { value: 1, locked: false },
 			filters: defaultFilters(),
@@ -40,7 +40,7 @@
 		data.sorting = deduplicate(data.sorting, (sort) => sort.name);
 	}
 
-	const token = writable(canvas.tokens.controlled[0] ?? data?.tokens?.[0]);
+	const token = writable(canvas.tokens.controlled[0] ?? data?.sourceTokens?.[0]);
 	const creature = writable();
 	const currentFilters = writable(data.filters ?? []);
 	const sort = writable();
@@ -143,7 +143,7 @@
 								<span class="fas fa-lock" />
 							{/if}
 							<span>
-								{filter.name}
+								{@html filter.name}
 							</span>
 						</div>
 					{/each}
@@ -166,7 +166,7 @@
 			<div>
 				<label for="token">{localize('fs.menu.summonToken')}</label>
 				<select id="token" name="token" type="dropdown" placeholder="Select a Token" bind:value={$token}>
-					{#each data.tokens as token}
+					{#each data.sourceTokens as token}
 						<option value={token}>{token.name}</option>
 					{/each}
 				</select>

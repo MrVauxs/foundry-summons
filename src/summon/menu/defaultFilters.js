@@ -7,19 +7,17 @@ import { localize, moduleID } from '../../utils.js';
 export default function defaultFilters() {
 	const filterArray = [];
 
-	if (game.settings.get(moduleID, 'onlyImages')) {
-		filterArray.push({
-			name: localize('fs.menu.onlyImages'),
-			function: (creatures) => creatures.filter((x) => !x.img.includes('icons/')),
-			locked: true,
-		});
-	}
+	filterArray.push({
+		name: localize('fs.menu.onlyImages'),
+		function: (creatures) => creatures.filter((x) => !x.img.includes('icons/')),
+		locked: game.settings.get(moduleID, 'onlyImages'),
+	});
 
-	if (game.system.id === 'pf2e' && game.settings.get(moduleID, 'noUncommon')) {
+	if (game.system.id === 'pf2e') {
 		filterArray.push({
 			name: localize('fs.menu.noUncommon'),
 			function: (creatures) => creatures.filter((x) => x.system.traits.rarity === 'common'),
-			locked: true,
+			locked: game.settings.get(moduleID, 'noUncommon'),
 		});
 	}
 

@@ -2,7 +2,18 @@
 	export let openImage;
 	export let creature;
 
-	console.log(creature);
+	function alignmentStringToTraits(alignment) {
+		// returns an array of traits for the alignment string
+		// e.g. "LG" -> ["lawful", "good"]
+
+		let traits = [];
+		if (alignment.includes('L')) traits.push('lawful');
+		if (alignment.includes('N')) traits.push('neutral');
+		if (alignment.includes('C')) traits.push('chaotic');
+		if (alignment.includes('G')) traits.push('good');
+		if (alignment.includes('E')) traits.push('evil');
+		return traits;
+	}
 </script>
 
 <div class="level" data-tooltip="PF2E.Level{creature.system.details.level.value}">
@@ -18,8 +29,13 @@
 <div class="name">
 	{creature.name}
 </div>
-<div class="traits tags">
-	{#each creature.system.traits.value as trait, i}
+<div class="traits tags width">
+	{#each alignmentStringToTraits(creature.system.details.alignment.value) as trait}
+		<span class="tag alignment">
+			{trait}
+		</span>
+	{/each}
+	{#each creature.system.traits.value as trait}
 		<span class="tag">
 			{trait}
 		</span>
@@ -27,6 +43,14 @@
 </div>
 
 <style>
+	.width {
+		width: 18rem;
+	}
+
+	.alignment {
+		background-color: var(--secondary);
+	}
+
 	img {
 		clear: left;
 		float: left;

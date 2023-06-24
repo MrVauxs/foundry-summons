@@ -6,12 +6,7 @@ import { localize } from '../../utils.js';
  * @returns {Array} An array of sorting objects to merge with another filter array, or standalone.
  */
 export default function defaultSorting() {
-	const sortingArray = [
-		{
-			name: localize('fs.menu.sort.alphabetical'),
-			function: (a, b) => a.name.localeCompare(b.name),
-		},
-	];
+	const sortingArray = [];
 
 	if (game.system.id === 'pf2e') {
 		sortingArray.push({

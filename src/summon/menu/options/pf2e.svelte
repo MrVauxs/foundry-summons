@@ -3,6 +3,7 @@
 	export let creature;
 
 	function alignmentStringToTraits(alignment) {
+		if (typeof alignment !== 'string') return [];
 		// returns an array of traits for the alignment string
 		// e.g. "LG" -> ["lawful", "good"]
 
@@ -16,9 +17,11 @@
 	}
 </script>
 
-<div class="level" data-tooltip="PF2E.Level{creature.system.details.level.value}">
-	{creature.system.details.level.value}
-</div>
+{#if creature?.system?.details.level.value}
+	<div class="level" data-tooltip="PF2E.Level{creature?.system?.details.level.value}">
+		{creature?.system?.details.level.value}
+	</div>
+{/if}
 <img
 	src={creature.img}
 	alt={creature.name}
@@ -30,19 +33,19 @@
 	{creature.name}
 </div>
 <div class="traits tags width">
-	{#each alignmentStringToTraits(creature.system.details.alignment.value) as trait}
+	{#each alignmentStringToTraits(creature?.system?.details.alignment.value) as trait}
 		<span class="tag alignment">
 			{trait}
 		</span>
 	{/each}
-	{#each creature.system.traits.value as trait}
+	{#each creature?.system?.traits.value ?? [] as trait}
 		<span class="tag">
 			{trait}
 		</span>
 	{/each}
 </div>
 
-<style>
+<style lang="scss">
 	.width {
 		width: 18rem;
 	}
@@ -75,6 +78,7 @@
 	}
 
 	.name {
+		margin: 0 2rem 0 0;
 		padding: 0.125rem 0;
 	}
 

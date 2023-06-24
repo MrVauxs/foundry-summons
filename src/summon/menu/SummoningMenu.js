@@ -26,5 +26,5 @@ export default class SummoningApplication extends SvelteApplication {
  * @returns {void}
  */
 export function openMenu(args) {
-	new SummoningApplication().render(true, { focus: true, svelte: { props: { data: args } } });
+	new SummoningApplication().render(true, { focus: true, svelte: { props: { ogData: args } } });
 }

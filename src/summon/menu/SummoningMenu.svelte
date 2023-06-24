@@ -12,23 +12,36 @@
 	const { application } = getContext('#external');
 
 	export let elementRoot;
-	export let data;
+	export let ogData;
 
-	data = foundry.utils.mergeObject(
+	let data = foundry.utils.mergeObject(
 		{
 			sourceTokens: canvas.tokens.ownedTokens,
-			creatures: loadPacks(),
-			amount: { value: 1, locked: false },
-			filters: defaultFilters(),
-			sorting: defaultSorting(),
+			creatures: null,
 			location: null,
+			amount: { value: 1, locked: false },
+			filters: [],
+			sorting: [
+				{
+					name: localize('fs.menu.sort.alphabetical'),
+					function: (a, b) => a.name.localeCompare(b.name),
+				},
+			],
+			updates: undefined,
+			flags: undefined,
 			options: {
 				defaultFilters: true,
 				defaultSorting: true,
 			},
 		},
-		data
+		ogData
 	);
+
+	console.log(data);
+
+	if (data.creatures === null) {
+		data.creatures = loadPacks();
+	}
 
 	if (data.options.defaultFilters) {
 		data.filters.push(...defaultFilters());
@@ -43,7 +56,7 @@
 	const token = writable(canvas.tokens.controlled[0] ?? data?.sourceTokens?.[0]);
 	const creature = writable();
 	const currentFilters = writable(data.filters ?? []);
-	const sort = writable();
+	const sort = writable(data.sorting[0]);
 	const search = writable('');
 	const amount = writable(data.amount.value);
 
@@ -57,8 +70,10 @@
 				label: importedToken.name,
 				interval: importedToken.height < 1 ? 4 : importedToken.height % 2 === 0 ? 1 : -1,
 				lockSize: true,
-				drawOutline: false,
-				drawIcon: false,
+				radius: importedToken.width,
+				drawOutline: debug() || !game.modules.get('sequencer')?.active,
+				drawIcon: debug() || !game.modules.get('sequencer')?.active,
+				icon: importedToken.texture.src,
 			};
 
 			let crosshairShow;
@@ -99,6 +114,7 @@
 			creatureActor: $creature,
 			amount: $amount,
 			location,
+			updates: data.updates ?? {},
 			flags: data.flags ?? {},
 		};
 		debug('Sending', options);

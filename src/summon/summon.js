@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { debug, localize, moduleID } from '../utils';
 import { openMenu } from './menu/SummoningMenu.js';
 
@@ -101,6 +100,9 @@ async function summon(data) {
 		actor: actor.toObject(),
 	};
 
+	foundry.utils.mergeObject(updates, data.creatureActor.updates ?? {});
+	foundry.utils.mergeObject(updates, data.updates);
+
 	const callbacks = {
 		pre: async function (_location, _updates) {
 			mergeObject(_updates, {
@@ -145,14 +147,14 @@ async function summon(data) {
 				});
 			}
 
-			Hooks.once('fs-post-summon', () => {
+			Hooks.once('fs-postSummon', ({ tokenDoc }) => {
 				setTimeout(() => {
-					_spawnedTokenDoc.update({
+					tokenDoc.update({
 						alpha: 1,
 					});
-				}, 1000);
+				}, 250);
 
-				debug('Used default summoning animation.');
+				console.log('Foundry Summons | Used default summoning animation.');
 				return false;
 			});
 

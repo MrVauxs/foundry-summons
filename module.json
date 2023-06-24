@@ -50,12 +50,19 @@
 	"relationships": {
 		"requires": [
 			{
+				"id": "warpgate",
+				"type": "module",
+				"manifest": "https://github.com/trioderegion/warpgate/releases/latest/download/module.json",
 				"compatibility": {
 					"minimum": "1.17.2"
-				},
-				"id": "warpgate",
-				"manifest": "https://github.com/trioderegion/warpgate/releases/latest/download/module.json",
-				"type": "module"
+				}
+			}
+		],
+		"optional": [
+			{
+				"id": "sequencer",
+				"type": "module",
+				"manifest": "https://github.com/fantasycalendar/FoundryVTT-Sequencer/releases/latest/download/module.json"
 			}
 		]
 	},

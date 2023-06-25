@@ -108,7 +108,7 @@
 		}
 
 		const options = {
-			summonerTokenDocument: $token?.document?.toObject(),
+			summonerTokenDocument: $token.document,
 			creatureActor: $creature,
 			amount: $amount,
 			location,

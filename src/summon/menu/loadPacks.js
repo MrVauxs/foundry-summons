@@ -79,6 +79,7 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 
 class DocWrapper {
 	constructor(indexItem) {
+		this.docType = this.constructor.name;
 		Object.assign(this, indexItem);
 	}
 

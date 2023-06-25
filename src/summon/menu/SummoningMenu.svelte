@@ -37,8 +37,6 @@
 		ogData
 	);
 
-	console.log(data);
-
 	if (data.creatures === null) {
 		data.creatures = loadPacks();
 	}
@@ -120,6 +118,11 @@
 		debug('Sending', options);
 		warpgate.event.notify('fs-summon', options);
 		application.close();
+	}
+
+	if (data.options.autoPick && data.creatures.length === 1) {
+		creature.set(data.creatures[0]);
+		send();
 	}
 
 	function openImage(actor) {

@@ -79,9 +79,14 @@ async function summon(data) {
 
 	// Then we can proceed.
 	let actorName = (await fromUuid(`Actor.${game.settings.get(moduleID, 'blankNPC')[0].id}`)).name;
+	let actor = await data.creatureActor.loadDocument();
+	let token = actor.prototypeToken;
 
-	const actor = await data.creatureActor.loadDocument();
-	const token = actor.prototypeToken;
+	if (data.creatureActor.collectionName === 'actors') {
+		actorName = data.creatureActor.name;
+		actor = {};
+		token = { flags: {} };
+	}
 
 	Object.assign(token.flags, {
 		'foundry-summons': {
@@ -96,8 +101,8 @@ async function summon(data) {
 	});
 
 	const updates = {
-		token: token.toObject(),
-		actor: actor.toObject(),
+		token: token.toObject ? token.toObject() : { flags: {} },
+		actor: actor.toObject ? actor.toObject() : { flags: {} },
 	};
 
 	foundry.utils.mergeObject(updates, data.creatureActor.updates ?? {});
@@ -172,21 +177,25 @@ async function summon(data) {
 
 	switch (game.system.id) {
 		case 'pf2e': {
-			actorName = (
+			const futureActorName = (
 				await fromUuid(
 					`Actor.${
 						game.settings
 							.get(moduleID, 'blankNPC')
 							.find((blank) => (actor.size === 'sm' ? blank.size === 'med' : blank.size === actor.size))
-							.id
+							?.id
 					}`
 				)
-			).name;
+			)?.name;
 
-			updates.actor.system.details.alliance = (
-				await fromUuid(`Actor.${data.summonerTokenDocument.actorId}`)
-			).system.details.alliance;
+			if (futureActorName) actorName = futureActorName;
 
+			console.log(data.creatureActor.collectionName);
+			if (!data.creatureActor.collectionName === 'actors') {
+				updates.actor.system.details.alliance = (
+					await fromUuid(`Actor.${data.summonerTokenDocument.actorId}`)
+				).system.details.alliance;
+			}
 			// Delete token width and height to use the default size of
 			// our tokens because PF2e Bestiaries rely a bit TOO MUCH on auto-scaling.
 			updates.token.width = undefined;

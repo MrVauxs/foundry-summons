@@ -152,7 +152,8 @@ async function summon(data) {
 				});
 			}
 
-			Hooks.once('fs-postSummon', ({ tokenDoc }) => {
+			Hooks.once('fs-postSummon', ({ tokenDoc, sourceData }) => {
+				if (sourceData.flags.doNotContinue) return;
 				setTimeout(() => {
 					tokenDoc.update({
 						alpha: 1,
@@ -160,7 +161,6 @@ async function summon(data) {
 				}, 250);
 
 				console.log('Foundry Summons | Used default summoning animation.');
-				return false;
 			});
 
 			Hooks.call('fs-postSummon', {
@@ -190,7 +190,6 @@ async function summon(data) {
 
 			if (futureActorName) actorName = futureActorName;
 
-			console.log(data.creatureActor.collectionName);
 			if (!data.creatureActor.collectionName === 'actors') {
 				updates.actor.system.details.alliance = (
 					await fromUuid(`Actor.${data.summonerTokenDocument.actorId}`)

@@ -33,7 +33,7 @@
 	{creature.name}
 </div>
 <div class="traits tags width">
-	{#each alignmentStringToTraits(creature?.system?.details.alignment.value) as trait}
+	{#each alignmentStringToTraits(creature?.system?.details?.alignment?.value) as trait}
 		<span class="tag alignment">
 			{trait}
 		</span>

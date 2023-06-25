@@ -8,7 +8,7 @@
 	import { debug, localize, moduleID, deduplicate } from '../../utils.js';
 	import defaultFilters from './defaultFilters.js';
 	import defaultSorting from './defaultSorting.js';
-	import { getContext, onMount } from 'svelte';
+	import { getContext } from 'svelte';
 	const { application } = getContext('#external');
 
 	export let elementRoot;

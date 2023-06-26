@@ -9,7 +9,10 @@
 	const onlyImages = gameSettings.getStore('onlyImages');
 	const autoAccept = gameSettings.getStore('autoAccept');
 	const additionalIndexFields = gameSettings.getStore('additionalIndexFields');
-	const packs = game.packs.contents.filter((pack) => pack.metadata.type === 'Actor');
+	const packs = [
+		...CONFIG.FoundrySummons.customPacks,
+		...game.packs.contents.filter((pack) => pack.metadata.type === 'Actor').map((pack) => pack.metadata),
+	];
 
 	let lastPick;
 	let additionalIndexFieldstring = $additionalIndexFields.toString();
@@ -23,19 +26,13 @@
 
 	function addToList(source, event) {
 		if (event?.shiftKey && lastPick) {
-			const index = packs.map((x) => x.metadata).findIndex((x) => x.id === lastPick.id);
-			const lastIndex = packs.map((x) => x.metadata).findIndex((x) => x.id === source.id);
+			const index = packs.findIndex((x) => x.id === lastPick.id);
+			const lastIndex = packs.findIndex((x) => x.id === source.id);
 
 			if (index < lastIndex) {
-				packs
-					.map((x) => x.metadata)
-					.slice(index, lastIndex + 1)
-					.forEach((x) => addToList(x));
+				packs.slice(index, lastIndex + 1).forEach((x) => addToList(x));
 			} else {
-				packs
-					.map((x) => x.metadata)
-					.slice(lastIndex, index + 1)
-					.forEach((x) => addToList(x));
+				packs.slice(lastIndex, index + 1).forEach((x) => addToList(x));
 			}
 		} else {
 			if ($sources.map((x) => x.id).includes(source.id)) {
@@ -58,10 +55,10 @@
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div
 					class="option"
-					on:click={(event) => addToList(pack.metadata, event)}
-					class:selected={$sources.map((x) => x.id).includes(pack.metadata.id)}
+					on:click={(event) => addToList(pack, event)}
+					class:selected={$sources.map((x) => x.id).includes(pack.id)}
 				>
-					{pack.title}
+					{pack.label}
 				</div>
 			{/each}
 		</div>

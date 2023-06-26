@@ -1,4 +1,4 @@
-import { moduleID, localize, Progress } from '../../utils';
+import { moduleID, localize, Progress, deduplicate, debug } from '../../utils';
 import { DocWrapper } from '../packs';
 
 /**
@@ -13,6 +13,8 @@ import { DocWrapper } from '../packs';
 export default async function loadPacks(refresh = false, packs = game.settings.get(moduleID, 'sources')) {
 	const progress = new Progress({ steps: packs.length });
 
+	packs = deduplicate([...CONFIG.FoundrySummons.customPacks, ...packs], (pack) => pack.id);
+
 	let index = window.foundrySummons.index ?? [];
 
 	if (refresh) index = [];
@@ -20,9 +22,9 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 	if (index.length > 0) return index;
 
 	for (const pack of packs) {
-		const packData = game.packs.get(pack.id);
+		const packData = pack.getIndex ? pack : game.packs.get(pack.id);
 		if (!packData) {
-			ui.notifications.error(
+			debug(
 				`Foundry Summons | ${localize('fs.notifications.error.loadingPack', {
 					pack: pack.id ?? pack.label ?? pack.title ?? pack.name,
 				})}`
@@ -69,14 +71,18 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 			}
 		}
 
-		packIndex = packIndex.map((indexItem) => new DocWrapper(indexItem));
-
-		// Allow third parties to add more stuff to the index
-		Hooks.callAll('fs-loadingPacks', index);
+		packIndex = packIndex.map((indexItem) =>
+			indexItem.docType
+				? new CONFIG.FoundrySummons.docWrapperClasses[indexItem.docType](indexItem)
+				: new DocWrapper(indexItem)
+		);
 
 		index = index.concat(...packIndex);
 		progress.advance(localize('fs.notifications.loadingPack', { pack: pack.label }));
 	}
+
+	// Allow third parties to add more stuff to the index
+	Hooks.callAll('fs-loadingPacks', index);
 
 	progress.close(localize('fs.notifications.loadingComplete'));
 

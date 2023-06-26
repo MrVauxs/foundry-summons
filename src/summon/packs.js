@@ -41,6 +41,8 @@ Hooks.once('ready', () => {
 		docWrapperClasses: {
 			DocWrapper,
 		},
+		customPacks: [],
 	};
 	Hooks.callAll('fs-addWrapperClasses', CONFIG.FoundrySummons.docWrapperClasses);
+	Hooks.callAll('fs-addCustomPacks', CONFIG.FoundrySummons.customPacks);
 });

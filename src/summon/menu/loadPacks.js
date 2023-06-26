@@ -1,4 +1,5 @@
 import { moduleID, localize, Progress } from '../../utils';
+import { DocWrapper } from '../packs';
 
 /**
  * Loads and Indexes Compendiums.
@@ -29,7 +30,13 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 			continue;
 		}
 
-		let packIndex = await packData.getIndex({ fields: game.settings.get(moduleID, 'indexFields') });
+		const fields = [
+			...game.settings.get(moduleID, 'indexFields'),
+			...game.settings.get(moduleID, 'additionalIndexFields'),
+		];
+		let packIndex = await packData.getIndex({
+			fields,
+		});
 
 		// Module Art Support (PF2e Token Bestiary and such)
 		// Don't change this apparently otherwise the images don't load.
@@ -77,24 +84,9 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 	return index;
 }
 
-class DocWrapper {
-	constructor(indexItem) {
-		this.docType = this.constructor.name;
-		Object.assign(this, indexItem);
-	}
-
-	// Regardless of whatever you put here, uuid is still a required field.
-	// Otherwise you fuck up the "selected" styling in the Summoning Menu.
-	// If you aren't using it, at least give it an unique value.
-	async loadDocument() {
-		return await fromUuid(this.uuid);
-	}
-}
-
 window.foundrySummons = window.foundrySummons || {};
 window.foundrySummons = {
 	...(window.foundrySummons || {}),
-	DocWrapper,
 	loadPacks,
 	refresh: () => loadPacks(true),
 };

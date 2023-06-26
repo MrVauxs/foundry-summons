@@ -85,6 +85,17 @@ Hooks.once('init', () => {
 		},
 	});
 
+	gameSettings.register({
+		namespace: moduleID,
+		key: 'additionalIndexFields',
+		options: {
+			scope: 'world',
+			config: false,
+			type: Array,
+			default: [],
+		},
+	});
+
 	registerSystemSettings();
 });
 

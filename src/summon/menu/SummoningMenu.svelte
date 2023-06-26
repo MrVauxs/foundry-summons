@@ -97,7 +97,7 @@
 				return;
 			}
 
-			location = (
+			const template = (
 				await canvas.scene.createEmbeddedDocuments('MeasuredTemplate', [
 					{
 						...crosshairs,
@@ -105,11 +105,13 @@
 					},
 				])
 			)[0];
+
+			location = { ...template.toObject(), docName: 'MeasuredTemplate', uuid: template.uuid };
 		}
 
 		const options = {
-			summonerTokenDocument: $token.document,
-			creatureActor: $creature,
+			summonerTokenDocument: $token?.document,
+			creatureActor: $creature.serialize(),
 			amount: $amount,
 			location,
 			updates: data.updates ?? {},
@@ -216,7 +218,7 @@
 									<!-- svelte-ignore a11y-click-events-have-key-events -->
 									<div
 										class="option"
-										class:selected={$creature?.uuid === opt.uuid}
+										class:selected={$creature?.id === opt.id}
 										on:click={() => ($creature = opt)}
 										on:dblclick={send}
 									>

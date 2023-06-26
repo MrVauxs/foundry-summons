@@ -55,6 +55,15 @@ async function summon(data) {
 		return ui.notifications.error(`Foundry Summons | ${localize('fs.notifications.error.permission')}`);
 	debug('Received', data);
 
+	const ClassDocWrapper = CONFIG.FoundrySummons.docWrapperClasses[data.creatureActor.docType];
+	if (!ClassDocWrapper)
+		throw new Error(localize('fs.notifications.error.docType', { docType: data.creatureActor.docType }));
+
+	const docWrapper = ClassDocWrapper.deserialize(data.creatureActor);
+	const actorData = await docWrapper.loadDocument();
+
+	if (data.location.docName === 'MeasuredTemplate') data.location = await fromUuid(data.location.uuid);
+
 	if (
 		game.settings.get(moduleID, 'debug') ||
 		(!game.settings.get(moduleID, 'autoAccept') && !(game.user.id === data.userId))
@@ -65,10 +74,11 @@ async function summon(data) {
 			content: localize('fs.dialog.request', {
 				player: game.users.get(data.userId).name,
 				amount: data.amount,
-				creature: data.creatureActor.name,
+				creature: actorData.name,
 			}),
 			label: localize('fs.dialog.accept'),
 		});
+
 		if (!summoning) {
 			if (data.location?.constructor?.name.includes('MeasuredTemplate')) {
 				data.location.delete();
@@ -79,11 +89,11 @@ async function summon(data) {
 
 	// Then we can proceed.
 	let actorName = (await fromUuid(`Actor.${game.settings.get(moduleID, 'blankNPC')[0].id}`)).name;
-	let actor = await data.creatureActor.loadDocument();
+	let actor = actorData;
 	let token = actor.prototypeToken;
 
-	if (data.creatureActor.collectionName === 'actors') {
-		actorName = data.creatureActor.name;
+	if (!actorData.uuid.startsWith('Compendium')) {
+		actorName = actorData.name;
 		actor = {};
 		token = { flags: {} };
 	}
@@ -105,7 +115,7 @@ async function summon(data) {
 		actor: actor.toObject ? actor.toObject() : { flags: {} },
 	};
 
-	foundry.utils.mergeObject(updates, data.creatureActor.updates ?? {});
+	foundry.utils.mergeObject(updates, actorData.updates ?? {});
 	foundry.utils.mergeObject(updates, data.updates);
 
 	const callbacks = {
@@ -190,9 +200,9 @@ async function summon(data) {
 
 			if (futureActorName) actorName = futureActorName;
 
-			if (!data.creatureActor.collectionName === 'actors') {
+			if (!actorData.uuid.startsWith('Compendium')) {
 				updates.actor.system.details.alliance = (
-					await fromUuid(`Actor.${data.summonerTokenDocument.actorId}`)
+					await fromUuid(`Actor.${data.summonerTokenDocument?.actorId}`)
 				).system.details.alliance;
 			}
 			// Delete token width and height to use the default size of

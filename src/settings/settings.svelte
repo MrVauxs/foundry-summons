@@ -8,18 +8,18 @@
 	const sources = gameSettings.getStore('sources');
 	const onlyImages = gameSettings.getStore('onlyImages');
 	const autoAccept = gameSettings.getStore('autoAccept');
-	const indexFields = gameSettings.getStore('indexFields');
+	const additionalIndexFields = gameSettings.getStore('additionalIndexFields');
 	const packs = game.packs.contents.filter((pack) => pack.metadata.type === 'Actor');
 
 	let lastPick;
-	let indexFieldString = $indexFields.toString();
+	let additionalIndexFieldstring = $additionalIndexFields.toString();
 
-	$: $indexFields = indexFieldString.split(',').map((x) => x.trim());
+	$: $additionalIndexFields = additionalIndexFieldstring.split(',').map((x) => x.trim());
 
 	$: debug('Sources', $sources);
 	$: debug('Only Images', $onlyImages);
 	$: debug('Auto Accept', $autoAccept);
-	$: debug('Index Fields', $indexFields);
+	$: debug('Index Fields', $additionalIndexFields);
 
 	function addToList(source, event) {
 		if (event?.shiftKey && lastPick) {
@@ -113,24 +113,14 @@
 	</div>
 	<div class="setting">
 		<div class="right">
-			<input type="text" bind:value={indexFieldString} class="input" />
+			<input type="text" bind:value={additionalIndexFieldstring} class="input" />
 		</div>
 		<p>
-			<i class="fas fa-exclamation-triangle" />
-			{localize('fs.settings.indexFields.title')}
-			{#if debug()}(indexFields){/if}
+			{localize('fs.settings.additionalIndexFields.title')}
+			{#if debug()}(additionalIndexFields){/if}
 		</p>
 		<p class="notes">
-			{localize('fs.settings.indexFields.description')}
-			<br />
-			<!-- svelte-ignore a11y-missing-attribute -->
-			<a
-				style="color: var(--color-text-hyperlink);"
-				on:click={setDefaultIndexFields}
-				on:keydown={setDefaultIndexFields}
-			>
-				{localize('fs.settings.indexFields.default')}
-			</a>
+			{localize('fs.settings.additionalIndexFields.description')}
 		</p>
 	</div>
 	<SystemSpecific {gameSettings} />

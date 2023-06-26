@@ -40,7 +40,8 @@
 			"error": {
 				"loadingPack": "Error loading pack \"{pack}\", does it exist?",
 				"permission": "You don't have permission to do that. How did you run this function?",
-				"warpgate": "Warpgate is a REQUIRED dependency of Foundry Summons, please enable it!"
+				"warpgate": "Warpgate is a REQUIRED dependency of Foundry Summons, please enable it!",
+				"docType": "No document wrapper found for {docType}!."
 			}
 		},
 		"settings": {
@@ -66,10 +67,9 @@
 				"title": "Automatically Accept Summoning Requests",
 				"description": "The GM no longer will need to accept a Summoning Request from a Player."
 			},
-			"indexFields": {
-				"title": "Index Fields",
-				"description": "What fields to index for filtering purposes. Don't modify unless you know what you are doing!",
-				"default": "Return to Default."
+			"additionalIndexFields": {
+				"title": "Additional Index Fields",
+				"description": "Additional fields to index for filtering or display purposes."
 			}
 		}
 	}

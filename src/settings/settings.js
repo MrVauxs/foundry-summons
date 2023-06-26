@@ -105,11 +105,7 @@ Hooks.once('ready', () => {
 		selectDefaultSources();
 	}
 
-	if (game.settings.get(moduleID, 'indexFields').includes('none')) {
-		console.log('Foundry Summons | Selecting default index fields');
-		setDefaultIndexFields();
-	}
-
+	setDefaultIndexFields();
 	createBlanks();
 });
 

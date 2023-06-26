@@ -3,9 +3,11 @@
 	export let creature;
 </script>
 
-<div class="cr" data-tooltip="CR {creature.system.details.cr}">
-	{creature.system.details.cr}
-</div>
+{#if creature?.system?.details?.cr}
+	<div class="cr" data-tooltip="CR {creature.system.details.cr}">
+		{creature.system.details.cr}
+	</div>
+{/if}
 <img
 	src={creature.img}
 	alt={creature.name}

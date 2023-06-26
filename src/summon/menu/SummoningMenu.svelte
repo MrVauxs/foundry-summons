@@ -267,7 +267,6 @@
 		min-height: 2.25rem;
 		height: 2.25rem;
 		max-height: 2.25rem;
-		background: url(../ui/parchment.jpg) repeat;
 
 		input {
 			height: 1.75rem;

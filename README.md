@@ -19,6 +19,8 @@ Built in [Svelte](https://svelte.dev/) using [TyphonJS Framework](https://github
 | fs-preSummon | Gets called before the token is summoned, allowing you to modify it before being put on the board | [Link](https://github.com/MrVauxs/foundry-summons/blob/8eb1315c8da299f33d492b90f61b0645eadef479/src/summon/summon.js#L124) |
 | fs-postSummon | Gets called after the token is summoned, allowing you to create your own entrance animations as the token starts off invisible | [Link](https://github.com/MrVauxs/foundry-summons/blob/8eb1315c8da299f33d492b90f61b0645eadef479/src/summon/summon.js#LL156C3-L156C3) |
 | fs-loadingPacks | Gets called when creating the creature index, allowing you to add your own custom data to it | [Link](https://github.com/MrVauxs/foundry-summons/blob/8eb1315c8da299f33d492b90f61b0645eadef479/src/summon/menu/loadPacks.js#L68) |
+| fs-addWrapperClasses | Gets called once ready. Provides an easy way to add new DocWrappers to the module. | [Relevant Code 1](https://github.com/MrVauxs/foundry-summons/blob/main/src/summon/menu/loadPacks.js#L76) and [2](https://github.com/MrVauxs/foundry-summons/blob/main/src/summon/summon.js#L58-L63) |
+| fs-addCustomPacks | Gets called once ready. Provides an easy way to add new Source Packs to the module, acting like Compendiums. | [Relevant Code](https://github.com/MrVauxs/foundry-summons/blob/main/src/summon/menu/loadPacks.js#L16) |
 
 ### Preview
 

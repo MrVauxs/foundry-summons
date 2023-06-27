@@ -4,6 +4,8 @@ export class DocWrapper {
 
 		this.docType = this.constructor.name;
 		Object.assign(this, indexItem);
+		this.uuid = indexItem.uuid;
+		this.name = indexItem.name;
 
 		this.id ??= this.uuid;
 

@@ -200,7 +200,7 @@ async function summon(data) {
 
 			if (futureActorName) actorName = futureActorName;
 
-			if (!actorData.uuid.startsWith('Compendium')) {
+			if (actorData.uuid.startsWith('Compendium')) {
 				updates.actor.system.details.alliance = (
 					await fromUuid(`Actor.${data.summonerTokenDocument?.actorId}`)
 				).system.details.alliance;

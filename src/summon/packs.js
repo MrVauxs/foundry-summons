@@ -36,13 +36,14 @@ export class DocWrapper {
 	}
 }
 
+CONFIG.FoundrySummons = {
+	docWrapperClasses: {
+		DocWrapper,
+	},
+	customPacks: [],
+};
+
 Hooks.once('ready', () => {
-	CONFIG.FoundrySummons = {
-		docWrapperClasses: {
-			DocWrapper,
-		},
-		customPacks: [],
-	};
 	Hooks.callAll('fs-addWrapperClasses', CONFIG.FoundrySummons.docWrapperClasses);
 	Hooks.callAll('fs-addCustomPacks', CONFIG.FoundrySummons.customPacks);
 });

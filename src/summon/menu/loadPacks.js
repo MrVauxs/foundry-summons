@@ -14,10 +14,9 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 	const progress = new Progress({ steps: packs.length });
 
 	const customPackLookup = {};
-	CONFIG.FoundrySummons.customPacks.forEach(pack => customPackLookup[pack.id] = pack);
+	CONFIG.FoundrySummons.customPacks.forEach((pack) => (customPackLookup[pack.id] = pack));
 
-	packs = deduplicate(packs, (pack) => pack.id)
-		.map(pack => customPackLookup[pack.id] ?? pack);
+	packs = deduplicate(packs, (pack) => pack.id).map((pack) => customPackLookup[pack.id] ?? pack);
 
 	let index = window.foundrySummons.index ?? [];
 

@@ -118,6 +118,8 @@ async function summon(data) {
 	foundry.utils.mergeObject(updates, actorData.updates ?? {});
 	foundry.utils.mergeObject(updates, data.updates);
 
+	updates.token.actorData = { ownership: { [data.userId]: 3 } };
+
 	const callbacks = {
 		pre: async function (_location, _updates) {
 			mergeObject(_updates, {

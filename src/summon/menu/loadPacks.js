@@ -13,7 +13,11 @@ import { DocWrapper } from '../packs';
 export default async function loadPacks(refresh = false, packs = game.settings.get(moduleID, 'sources')) {
 	const progress = new Progress({ steps: packs.length });
 
-	packs = deduplicate([...CONFIG.FoundrySummons.customPacks, ...packs], (pack) => pack.id);
+	const customPackLookup = {};
+	CONFIG.FoundrySummons.customPacks.forEach(pack => customPackLookup[pack.id] = pack);
+
+	packs = deduplicate(packs, (pack) => pack.id)
+		.map(pack => customPackLookup[pack.id] ?? pack);
 
 	let index = window.foundrySummons.index ?? [];
 

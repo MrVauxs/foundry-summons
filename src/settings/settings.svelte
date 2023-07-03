@@ -44,6 +44,7 @@
 			$sources.filter((value, index, self) => index === self.findIndex((t) => t.id === value.id));
 		}
 		lastPick = source;
+		foundrySummons.index = [];
 	}
 </script>
 

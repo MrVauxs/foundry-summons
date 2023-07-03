@@ -1,8 +1,15 @@
-2023/06/28-17:04:35.977053 ffff86e82160 Recovering log #120
-2023/06/28-17:04:35.990081 ffff86e82160 Delete type=3 #118
-2023/06/28-17:04:35.990126 ffff86e82160 Delete type=0 #120
-2023/06/28-17:07:33.746623 fffe654e0160 Level-0 table #125: started
-2023/06/28-17:07:33.746659 fffe654e0160 Level-0 table #125: 0 bytes OK
-2023/06/28-17:07:33.749369 fffe654e0160 Delete type=0 #123
-2023/06/28-17:07:33.752008 fffe654e0160 Manual compaction at level-0 from '!macros!Ix6ye8207xMySmjN' @ 72057594037927935 : 1 .. '!macros!mnKNj84r6ZmGZyX3' @ 0 : 0; will stop at (end)
-2023/06/28-17:07:33.759540 fffe654e0160 Manual compaction at level-1 from '!macros!Ix6ye8207xMySmjN' @ 72057594037927935 : 1 .. '!macros!mnKNj84r6ZmGZyX3' @ 0 : 0; will stop at (end)
+2023/07/03-22:03:39.504713 ffff937fe160 Recovering log #140
+2023/07/03-22:03:39.517211 ffff937fe160 Delete type=0 #140
+2023/07/03-22:03:39.517245 ffff937fe160 Delete type=3 #138
+2023/07/03-23:51:30.779067 fffe71eba160 Level-0 table #145: started
+2023/07/03-23:51:30.782359 fffe71eba160 Level-0 table #145: 1099 bytes OK
+2023/07/03-23:51:30.784587 fffe71eba160 Delete type=0 #143
+2023/07/03-23:51:30.787371 fffe71eba160 Manual compaction at level-0 from '!macros!Ix6ye8207xMySmjN' @ 72057594037927935 : 1 .. '!macros!mnKNj84r6ZmGZyX3' @ 0 : 0; will stop at (end)
+2023/07/03-23:51:30.787433 fffe71eba160 Manual compaction at level-1 from '!macros!Ix6ye8207xMySmjN' @ 72057594037927935 : 1 .. '!macros!mnKNj84r6ZmGZyX3' @ 0 : 0; will stop at '!macros!mnKNj84r6ZmGZyX3' @ 10 : 1
+2023/07/03-23:51:30.787438 fffe71eba160 Compacting 1@1 + 1@2 files
+2023/07/03-23:51:30.790875 fffe71eba160 Generated table #146@1: 3 keys, 1219 bytes
+2023/07/03-23:51:30.790898 fffe71eba160 Compacted 1@1 + 1@2 files => 1219 bytes
+2023/07/03-23:51:30.793345 fffe71eba160 compacted to: files[ 0 0 1 0 0 0 0 ]
+2023/07/03-23:51:30.793410 fffe71eba160 Delete type=2 #145
+2023/07/03-23:51:30.793461 fffe71eba160 Delete type=2 #9
+2023/07/03-23:51:30.803097 fffe71eba160 Manual compaction at level-1 from '!macros!mnKNj84r6ZmGZyX3' @ 10 : 1 .. '!macros!mnKNj84r6ZmGZyX3' @ 0 : 0; will stop at (end)

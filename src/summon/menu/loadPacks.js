@@ -50,10 +50,32 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 				const systemPath = game.pf2e.system.moduleArt;
 				await systemPath.refresh();
 
+				packIndex = packIndex.filter((x) => x?.system?.traits);
 				packIndex = packIndex.map((x) => {
+					// Handle Images
 					const actorArt = systemPath.map.get(x.uuid)?.img;
 					x.img = actorArt ?? x.img;
 					if (x.img === '') x.img = 'icons/svg/mystery-man.svg';
+
+					// Handle Traits
+
+					function alignmentStringToTraits(alignment) {
+						if (typeof alignment !== 'string') return [];
+						// returns an array of traits for the alignment string
+						// e.g. "LG" -> ["lawful", "good"]
+
+						let traits = [];
+						if (alignment.includes('L')) traits.push('lawful');
+						if (alignment.includes('N')) traits.push('neutral');
+						if (alignment.includes('C')) traits.push('chaotic');
+						if (alignment.includes('G')) traits.push('good');
+						if (alignment.includes('E')) traits.push('evil');
+						return traits;
+					}
+
+					if (x.system.details?.alignment?.value) {
+						x.system.traits.value.push(...alignmentStringToTraits(x.system.details.alignment.value));
+					}
 					return x;
 				});
 

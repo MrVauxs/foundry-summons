@@ -24,7 +24,7 @@
 			"summonToken": "Select the Summoning Token:",
 			"howMany": "How Many Creatures:",
 			"loading": "Loading…",
-			"nothing": "No Creatures Found!",
+			"nothing": "No Creatures Found! Refine your search filters or sources.",
 			"error": "Something went wrong: {error}",
 			"summon": "Summon"
 		},

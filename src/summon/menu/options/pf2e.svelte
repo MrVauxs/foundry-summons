@@ -1,20 +1,6 @@
 <script>
 	export let openImage;
 	export let creature;
-
-	function alignmentStringToTraits(alignment) {
-		if (typeof alignment !== 'string') return [];
-		// returns an array of traits for the alignment string
-		// e.g. "LG" -> ["lawful", "good"]
-
-		let traits = [];
-		if (alignment.includes('L')) traits.push('lawful');
-		if (alignment.includes('N')) traits.push('neutral');
-		if (alignment.includes('C')) traits.push('chaotic');
-		if (alignment.includes('G')) traits.push('good');
-		if (alignment.includes('E')) traits.push('evil');
-		return traits;
-	}
 </script>
 
 {#if creature?.system?.details.level.value}
@@ -33,11 +19,6 @@
 	{creature.name}
 </div>
 <div class="traits tags width">
-	{#each alignmentStringToTraits(creature?.system?.details?.alignment?.value) as trait}
-		<span class="tag alignment">
-			{trait}
-		</span>
-	{/each}
 	{#each creature?.system?.traits.value ?? [] as trait}
 		<span class="tag">
 			{trait}

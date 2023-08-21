@@ -175,7 +175,7 @@ async function summon(data) {
 				return false;
 			});
 
-			Hooks.call('fs-postSummon', {
+			Hooks.callAll('fs-postSummon', {
 				location: _location,
 				tokenDoc: _spawnedTokenDoc,
 				updates: _updates,

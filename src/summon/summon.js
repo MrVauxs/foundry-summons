@@ -164,23 +164,27 @@ async function summon(data) {
 				});
 			}
 
-			Hooks.once('fs-postSummon', ({ tokenDoc }) => {
-				setTimeout(() => {
-					tokenDoc.update({
-						alpha: 1,
-					});
-				}, 250);
+			Hooks.once('fs-postSummon', (postSummon) => {
+				let { tokenDoc } = postSummon;
+				if (!postSummon.animated) {
+					postSummon.animated = true;
+					setTimeout(() => {
+						tokenDoc.update({
+							alpha: 1,
+						});
+					}, 250);
 
-				console.log('Foundry Summons | Used default summoning animation.');
-				return false;
+					console.log('Foundry Summons | Used default summoning animation.');
+				}
 			});
 
-			Hooks.call('fs-postSummon', {
+			Hooks.callAll('fs-postSummon', {
 				location: _location,
 				tokenDoc: _spawnedTokenDoc,
 				updates: _updates,
 				iteration: _iteration,
 				sourceData: data,
+				animated: false,
 			});
 		},
 	};

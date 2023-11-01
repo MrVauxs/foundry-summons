@@ -43,11 +43,16 @@
 		data.creatures = loadPacks();
 	} else {
 		// We want to support the following options:
-		// - "Actor Name" (must be imported) game.actors.getName(name)
-		// - "Actor ID" (must be imported) game.actors.get(id)
+		// - "Actor Name" (must be imported)
+		// - "Actor ID" (must be imported)
 		// - Array of above
+		// - "Folder Name"
 
 		let creatures = [];
+
+		if (game.actors.folders.getName(data.creatures)) {
+			data.creatures = game.actors.folders.getName(data.creatures).contents;
+		}
 
 		if (Array.isArray(data.creatures)) {
 			creatures.push(...data.creatures);
@@ -57,6 +62,7 @@
 
 		creatures = creatures.flatMap((el) => {
 			if (el instanceof DocWrapper) return el;
+			if (el instanceof CONFIG.Actor.documentClass) return new DocWrapper(el);
 
 			const actor = game.actors.get(el) || game.actors.getName(el);
 			if (!actor) throw Error('Foundry Summons | No actor found in provided arguments!');

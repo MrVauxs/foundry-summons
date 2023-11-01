@@ -2,9 +2,11 @@ import { localize, moduleID, debug } from '../../utils';
 /**
  * Creates new actors.
  *
+ * @param {object} defaultToken The default token to use for the blank actors.
+ *
  * @returns {Promise<boolean>} Returns true once the actors are created.
  */
-export default async function createBlanks() {
+export default async function createBlanks(defaultToken) {
 	let npcFolder = game.folders.get(game.settings.get(moduleID, 'hiddenFolder'));
 
 	if (!npcFolder) {
@@ -41,7 +43,6 @@ export default async function createBlanks() {
 			Actor.create({
 				name,
 				type: 'npc',
-				folder: npcFolder.id,
 				img,
 				size,
 				prototypeToken: {
@@ -63,6 +64,8 @@ export default async function createBlanks() {
 						},
 					},
 				},
+				...defaultToken,
+				folder: npcFolder.id,
 			}).then((actor) => {
 				blankNPCs.push({ id: actor.id, size });
 				game.settings.set(moduleID, 'blankNPC', blankNPCs);

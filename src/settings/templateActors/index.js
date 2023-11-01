@@ -18,10 +18,12 @@ export async function createBlanks() {
 		);
 	}
 
+	const defaultToken = game.settings.get('core', 'defaultToken');
+
 	switch (game.system.id) {
 		case 'pf2e':
-			return await pf2e();
+			return await pf2e(defaultToken);
 		default:
-			return await defaultBlanks();
+			return await defaultBlanks(defaultToken);
 	}
 }

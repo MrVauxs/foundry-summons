@@ -60,9 +60,13 @@
 			"debug": {
 				"title": "Debug Mode"
 			},
+			"defaultImages": {
+				"title": "Restrict Summons to One's with Token Images By Default",
+				"description": "Only creatures that have a token image will be available to summon by default. The filter can be disabled by clicking the \"Only Creatures with Images\" button in the Summoning Menu."
+			},
 			"onlyImages": {
 				"title": "Only Allow Summons With Token Images",
-				"description": "Only creatures that have a token image will be available to summon by default."
+				"description": "Only creatures that have a token image will be possible to summon. You will not be able to turn off this filter."
 			},
 			"autoAccept": {
 				"title": "Automatically Accept Summoning Requests",

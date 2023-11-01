@@ -6,6 +6,7 @@
 	export let gameSettings;
 
 	const sources = gameSettings.getStore('sources');
+	const defaultImages = gameSettings.getStore('defaultImages');
 	const onlyImages = gameSettings.getStore('onlyImages');
 	const autoAccept = gameSettings.getStore('autoAccept');
 	const additionalIndexFields = gameSettings.getStore('additionalIndexFields');
@@ -90,14 +91,33 @@
 	<hr />
 	<div class="setting">
 		<div class="right">
-			<input type="checkbox" bind:checked={$onlyImages} />
+			<input
+				type="checkbox"
+				bind:checked={$defaultImages}
+				on:click={() => {
+					// If default images is off, turn off only images
+					$defaultImages ? null : ($onlyImages = false);
+				}}
+			/>
 		</div>
 		<p>
-			{localize('fs.settings.onlyImages.title')}
-			{#if debug()}(onlyImages){/if}
+			{localize('fs.settings.defaultImages.title')}
+			{#if debug()}(defaultImages){/if}
 		</p>
-		<p class="notes">{localize('fs.settings.onlyImages.description')}</p>
+		<p class="notes">{localize('fs.settings.defaultImages.description')}</p>
 	</div>
+	{#if $defaultImages}
+		<div class="setting">
+			<div class="right">
+				<input type="checkbox" bind:checked={$onlyImages} />
+			</div>
+			<p>
+				{localize('fs.settings.onlyImages.title')}
+				{#if debug()}(onlyImages){/if}
+			</p>
+			<p class="notes">{localize('fs.settings.onlyImages.description')}</p>
+		</div>
+	{/if}
 	<div class="setting">
 		<div class="right">
 			<input type="checkbox" bind:checked={$autoAccept} />

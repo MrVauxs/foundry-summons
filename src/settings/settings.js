@@ -55,6 +55,17 @@ Hooks.once('init', () => {
 
 	gameSettings.register({
 		namespace: moduleID,
+		key: 'defaultImages',
+		options: {
+			scope: 'world',
+			config: false,
+			type: Boolean,
+			default: false,
+		},
+	});
+
+	gameSettings.register({
+		namespace: moduleID,
 		key: 'onlyImages',
 		options: {
 			scope: 'world',

@@ -25,6 +25,28 @@ export default class SummoningApplication extends SvelteApplication {
  *
  * @returns {void}
  */
-export function openMenu(args) {
+export async function openMenu(args) {
+	// Opens the menu with the props passed.
+	// The player sends a warpgate.event through the menu to the GM, who then summons the creature.
 	new SummoningApplication().render(true, { focus: true, svelte: { props: { ogData: args } } });
+
+	let promiseReject, promiseResolve;
+
+	const promise = new Promise((resolve, reject) => {
+		promiseResolve = resolve;
+		promiseReject = reject;
+	});
+
+	// After the above is done, the function below catches the response from the GM back to the player.
+	warpgate.event.trigger(
+		'fs-summonNotifyPlayer',
+		(data) => {
+			promiseResolve(data);
+		},
+		(data) => {
+			return data.player === game.user.id;
+		}
+	);
+
+	return promise;
 }

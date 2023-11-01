@@ -32,6 +32,7 @@
 			options: {
 				defaultFilters: true,
 				defaultSorting: true,
+				noAnimation: false,
 			},
 		},
 		ogData
@@ -110,16 +111,17 @@
 		}
 
 		const options = {
+			player: game.user.id,
 			summonerTokenDocument: $token?.document,
 			creatureActor: $creature.serialize(),
 			amount: $amount,
 			location,
 			updates: data.updates ?? {},
 			flags: data.flags ?? {},
+			noAnimation: data.options.noAnimation,
 		};
 		debug('Sending', options);
 		warpgate.event.notify('fs-summon', options);
-		application.close();
 	}
 
 	if (data.options.autoPick && data.creatures.length === 1) {
@@ -220,7 +222,7 @@
 										class="option"
 										class:selected={$creature?.id === opt.id}
 										on:click={() => ($creature = opt)}
-										on:dblclick={send}
+										on:dblclick={() => send() && application.close()}
 									>
 										<!-- svelte-ignore missing-declaration -->
 										<svelte:component
@@ -239,10 +241,20 @@
 			</div>
 		</div>
 	</main>
-	<button on:click={send} disabled={!$creature}>
-		{localize('fs.menu.summon')}
-		{$creature?.name ? `${$amount} ${$creature?.name}` : ''}
-	</button>
+	<div class="split">
+		<button on:click={send} class:disabled={!$creature} disabled={!$creature}>
+			{localize(
+				'fs.menu.summon',
+				$creature ? { number: $amount, creature: $creature?.name } : { number: '', creature: '' }
+			)}
+		</button>
+		<button on:click={() => send() && application.close()} class:disabled={!$creature} disabled={!$creature}>
+			{localize(
+				'fs.menu.summonAndClose',
+				$creature ? { number: $amount, creature: $creature?.name } : { number: '', creature: '' }
+			)}
+		</button>
+	</div>
 </ApplicationShell>
 
 <style lang="scss">
@@ -255,7 +267,8 @@
 	}
 
 	.disabled {
-		opacity: 0.5;
+		opacity: 0.6;
+		filter: grayscale(100%);
 	}
 
 	.search-options-box {
@@ -329,6 +342,20 @@
 		& > div {
 			box-shadow: 0 0 0.125rem 0.125rem rgba(0, 0, 0, 0.25);
 			margin: 0.25rem;
+		}
+
+		&.split {
+			all: unset;
+
+			display: flex;
+			flex-direction: row;
+			justify-content: space-evenly;
+			align-items: center;
+			padding-top: 0;
+			border-radius: 0.25rem;
+			button {
+				width: 100%;
+			}
 		}
 	}
 

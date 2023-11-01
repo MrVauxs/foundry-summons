@@ -1,6 +1,6 @@
 import { TJSGameSettings } from '@typhonjs-fvtt/svelte-standard/store';
 import Svelttings from './settings.svelte';
-import { debug, moduleID } from '../utils';
+import { moduleID } from '../utils';
 import { createBlanks } from './templateActors/index.js';
 import { registerSystemSettings, selectDefaultSources, setDefaultIndexFields } from './systemSpecific';
 import loadPacks from '../summon/menu/loadPacks';
@@ -110,7 +110,7 @@ Hooks.once('ready', () => {
 	createBlanks();
 
 	gameSettings.getStore('sources').subscribe(() => {
-		if (foundrySummons?.index?.length) {
+		if (window.foundrySummons?.index?.length) {
 			console.log('Foundry Summons | Updating Index');
 			loadPacks(true);
 		}

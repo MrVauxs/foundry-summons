@@ -59,17 +59,17 @@ export default () => {
 		// resources served with this particular Vite configuration. Modify the proxy rule as necessary for your
 		// static resources / project.
 		server: {
-			port: 30001,
+			port: 30011,
 			open: '/game',
 			proxy: {
 				// Serves static files from main Foundry server.
-				[`^(/${s_PACKAGE_ID}/(assets|lang|packs|style.css))`]: 'http://localhost:30011',
+				[`^(/${s_PACKAGE_ID}/(assets|lang|packs|style.css))`]: 'http://127.0.0.1:30001',
 
 				// All other paths besides package ID path are served from main Foundry server.
-				[`^(?!/${s_PACKAGE_ID}/)`]: 'http://localhost:30011',
+				[`^(?!/${s_PACKAGE_ID}/)`]: 'http://127.0.0.1:30001',
 
 				// Enable socket.io from main Foundry server.
-				'/socket.io': { target: 'ws://localhost:30011', ws: true },
+				'/socket.io': { target: 'ws://127.0.0.1:30001', ws: true },
 			},
 		},
 

@@ -31,9 +31,11 @@
 		width: 18rem;
 	}
 
+	/*
 	.alignment {
 		background-color: var(--secondary);
 	}
+	*/
 
 	img {
 		clear: left;

@@ -64,7 +64,7 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 						// returns an array of traits for the alignment string
 						// e.g. "LG" -> ["lawful", "good"]
 
-						let traits = [];
+						const traits = [];
 						if (alignment.includes('L')) traits.push('lawful');
 						if (alignment.includes('N')) traits.push('neutral');
 						if (alignment.includes('C')) traits.push('chaotic');

@@ -26,7 +26,8 @@
 			"loading": "Loading…",
 			"nothing": "No Creatures Found! Refine your search filters or sources.",
 			"error": "Something went wrong: {error}",
-			"summon": "Summon"
+			"summon": "Summon {number} {creature}",
+			"summonAndClose": "Summon {number} {creature} and Close"
 		},
 		"dialog": {
 			"title": "Summoning Request",

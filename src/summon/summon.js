@@ -83,6 +83,7 @@ async function summon(data) {
 			if (data.location?.constructor?.name.includes('MeasuredTemplate')) {
 				data.location.delete();
 			}
+			warpgate.event.notify('fs-summonNotifyPlayer', { ...data, tokenIds: false });
 			return;
 		}
 	}
@@ -164,19 +165,21 @@ async function summon(data) {
 				});
 			}
 
-			Hooks.once('fs-postSummon', (postSummon) => {
-				let { tokenDoc } = postSummon;
-				if (!postSummon.animated) {
-					postSummon.animated = true;
-					setTimeout(() => {
-						tokenDoc.update({
-							alpha: 1,
-						});
-					}, 250);
+			if (!data.noAnimation) {
+				Hooks.once('fs-postSummon', (postSummon) => {
+					const { tokenDoc } = postSummon;
+					if (!postSummon.animated) {
+						postSummon.animated = true;
+						setTimeout(() => {
+							tokenDoc.update({
+								alpha: 1,
+							});
+						}, 250);
 
-					console.log('Foundry Summons | Used default summoning animation.');
-				}
-			});
+						console.log('Foundry Summons | Used default summoning animation.');
+					}
+				});
+			}
 
 			Hooks.callAll('fs-postSummon', {
 				location: _location,
@@ -234,22 +237,25 @@ async function summon(data) {
 		options
 	);
 
-	warpgate
-		.spawnAt(
-			{
-				x,
-				y,
-			},
-			actorName,
-			updates,
-			callbacks,
-			options
-		)
-		.then(() => {
-			if (data.location?.constructor?.name.includes('MeasuredTemplate')) {
-				data.location.delete();
-			}
-		});
+	const results = warpgate.spawnAt(
+		{
+			x,
+			y,
+		},
+		actorName,
+		updates,
+		callbacks,
+		options
+	);
+
+	results.then(() => {
+		if (data.location?.constructor?.name.includes('MeasuredTemplate')) {
+			data.location.delete();
+		}
+	});
+
+	warpgate.event.notify('fs-summonNotifyPlayer', { ...data, tokenIds: await results });
+	return results;
 }
 
 window.foundrySummons = window.foundrySummons || {};

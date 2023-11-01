@@ -7,7 +7,6 @@ import { moduleID, debug } from '../../utils';
  * @returns {Promise<boolean>} Returns true once the actors are created.
  */
 export default async function createBlanks(defaultToken) {
-	debug('Foundry Summons | System not supported. Using default blank template.');
 	let npcFolder = game.folders.get(game.settings.get(moduleID, 'hiddenFolder'));
 
 	if (!npcFolder) {
@@ -19,7 +18,7 @@ export default async function createBlanks(defaultToken) {
 
 	debug('Available Blank NPCs', blankNPCs);
 
-	if (blankNPCs.length > 1) {
+	if (blankNPCs.length > 2) {
 		npcFolder.content.forEach(async (actor) => {
 			await actor.delete();
 		});
@@ -27,10 +26,27 @@ export default async function createBlanks(defaultToken) {
 		blankNPCs = [];
 	}
 
-	if (blankNPCs.length === 0) {
+	if (!blankNPCs.find((blank) => game.actors.get(blank.id)?.type === 'character')) {
 		Actor.create({
-			name: `Blank NPC`,
-			type: 'npc',
+			name: `Blank Character`,
+			type: 'character',
+			img: `icons/svg/cowled.svg`,
+			prototypeToken: {
+				width: 1,
+				height: 1,
+				...defaultToken,
+			},
+			folder: npcFolder.id,
+		}).then((actor) => {
+			blankNPCs.push({ id: actor.id });
+			game.settings.set(moduleID, 'blankNPC', blankNPCs);
+		});
+	}
+
+	if (!blankNPCs.find((blank) => game.actors.get(blank.id)?.type === 'ephemeral')) {
+		Actor.create({
+			name: `Blank Ephemeral`,
+			type: 'ephemeral',
 			img: `icons/svg/cowled.svg`,
 			prototypeToken: {
 				width: 1,

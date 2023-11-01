@@ -51,7 +51,7 @@ export function selectDefaultSources() {
 			break;
 		}
 		default: {
-			gameSettings.getStore('sources').set(['']);
+			gameSettings.getStore('sources').set([]);
 			break;
 		}
 	}

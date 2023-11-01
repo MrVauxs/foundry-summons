@@ -89,7 +89,16 @@ async function summon(data) {
 	}
 
 	// Then we can proceed.
-	let actorName = (await fromUuid(`Actor.${game.settings.get(moduleID, 'blankNPC')[0].id}`)).name;
+	let actorName;
+	try {
+		actorName = (await fromUuid(`Actor.${game.settings.get(moduleID, 'blankNPC')[0].id}`)).name;
+	} catch (error) {
+		ui.notifications.error(`Foundry Summons | ${localize('fs.notifications.error.blanks')}`);
+	}
+	if (!actorName) {
+		ui.notifications.error(`Foundry Summons | ${localize('fs.notifications.error.blanks')}`);
+		return;
+	}
 	let actor = actorData;
 	let token = actor.prototypeToken;
 
@@ -241,25 +250,37 @@ async function summon(data) {
 		options
 	);
 
-	const results = warpgate.spawnAt(
-		{
-			x,
-			y,
-		},
-		actorName,
-		updates,
-		callbacks,
-		options
-	);
+	try {
+		const results = warpgate.spawnAt(
+			{
+				x,
+				y,
+			},
+			actorName,
+			updates,
+			callbacks,
+			options
+		);
 
-	results.then(() => {
-		if (data.location?.constructor?.name.includes('MeasuredTemplate')) {
-			data.location.delete();
-		}
-	});
+		results.then(() => {
+			if (data.location?.constructor?.name.includes('MeasuredTemplate')) {
+				data.location.delete();
+			}
+		});
 
-	warpgate.event.notify('fs-summonNotifyPlayer', { ...data, tokenIds: await results });
-	return results;
+		warpgate.event.notify('fs-summonNotifyPlayer', { ...data, tokenIds: await results });
+
+		return results;
+	} catch (error) {
+		ui.notifications.error(`Foundry Summons | ${localize('fs.notifications.error.summon')}`);
+		console.log(`Foundry Summons | ${localize('fs.notifications.error.summon')}`, {
+			actorName,
+			updates,
+			callbacks,
+			options,
+		});
+		throw Error(error);
+	}
 }
 
 window.foundrySummons = window.foundrySummons || {};

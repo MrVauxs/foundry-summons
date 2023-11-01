@@ -14,11 +14,19 @@ export default async function createBlanks(defaultToken) {
 		game.settings.set(moduleID, 'hiddenFolder', npcFolder.id);
 	}
 
-	const blankNPCs = game.settings.get(moduleID, 'blankNPC');
+	let blankNPCs = game.settings.get(moduleID, 'blankNPC');
 
 	debug('Available Blank NPCs', blankNPCs);
 
 	const neededSizes = ['tiny', 'med', 'lg', 'huge', 'grg'];
+
+	if (blankNPCs.length > neededSizes.length) {
+		npcFolder.content.forEach(async (actor) => {
+			await actor.delete();
+		});
+		game.settings.set(moduleID, 'blankNPC', []);
+		blankNPCs = [];
+	}
 
 	if (blankNPCs.length < neededSizes.length) {
 		const message = `Foundry Summons | ${localize(`${moduleID}.notifications.blanks`)}`;
@@ -48,6 +56,7 @@ export default async function createBlanks(defaultToken) {
 				prototypeToken: {
 					width,
 					height,
+					...defaultToken,
 				},
 				system: {
 					attributes: {
@@ -64,7 +73,6 @@ export default async function createBlanks(defaultToken) {
 						},
 					},
 				},
-				...defaultToken,
 				folder: npcFolder.id,
 			}).then((actor) => {
 				blankNPCs.push({ id: actor.id, size });

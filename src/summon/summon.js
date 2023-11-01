@@ -222,6 +222,10 @@ async function summon(data) {
 		}
 	}
 
+	if (data.summonerTokenDocument?.disposition) {
+		updates.token.disposition = data.summonerTokenDocument?.disposition;
+	}
+
 	const x = data.location.x; //  - data.location.distance * canvas.grid.size
 	const y = data.location.y;
 

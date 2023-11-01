@@ -9,6 +9,7 @@
 	import defaultFilters from './defaultFilters.js';
 	import defaultSorting from './defaultSorting.js';
 	import { getContext } from 'svelte';
+	import { DocWrapper } from '../packs.js';
 	const { application } = getContext('#external');
 
 	export let elementRoot;
@@ -38,8 +39,32 @@
 		ogData
 	);
 
-	if (data.creatures === null) {
+	if (!data.creatures) {
 		data.creatures = loadPacks();
+	} else {
+		// We want to support the following options:
+		// - "Actor Name" (must be imported) game.actors.getName(name)
+		// - "Actor ID" (must be imported) game.actors.get(id)
+		// - Array of above
+
+		let creatures = [];
+
+		if (Array.isArray(data.creatures)) {
+			creatures.push(...data.creatures);
+		} else {
+			creatures.push(data.creatures);
+		}
+
+		creatures = creatures.flatMap((el) => {
+			if (el instanceof DocWrapper) return el;
+
+			const actor = game.actors.get(el) || game.actors.getName(el);
+			if (!actor) throw Error('Foundry Summons | No actor found in provided arguments!');
+
+			return new DocWrapper(actor);
+		});
+
+		data.creatures = creatures;
 	}
 
 	if (data.options.defaultFilters) {

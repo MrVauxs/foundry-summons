@@ -1,6 +1,7 @@
 export class DocWrapper {
 	constructor(indexItem) {
 		if (typeof indexItem === 'string') indexItem = JSON.parse(indexItem);
+		if (indexItem instanceof DocWrapper) return indexItem;
 
 		this.docType = this.constructor.name;
 		Object.assign(this, indexItem);

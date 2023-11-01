@@ -1,6 +1,8 @@
 import { localize, moduleID, debug } from '../../utils';
 /**
  * Creates new actors.
+ *
+ * @returns {Promise<boolean>} Returns true once the actors are created.
  */
 export default async function createBlanks() {
 	let npcFolder = game.folders.get(game.settings.get(moduleID, 'hiddenFolder'));
@@ -10,19 +12,9 @@ export default async function createBlanks() {
 		game.settings.set(moduleID, 'hiddenFolder', npcFolder.id);
 	}
 
-	let blankNPCs = game.settings.get(moduleID, 'blankNPC');
+	const blankNPCs = game.settings.get(moduleID, 'blankNPC');
 
 	debug('Available Blank NPCs', blankNPCs);
-
-	// Check if all Actors exist. If not, remove fakers.
-	if (blankNPCs.filter((x) => fromUuidSync(`Actor.${x.id}`)).length !== blankNPCs.length) {
-		game.settings.set(
-			moduleID,
-			'blankNPC',
-			blankNPCs.filter((x) => fromUuidSync(`Actor.${x.id}`))
-		);
-		blankNPCs = blankNPCs.filter((x) => fromUuidSync(`Actor.${x.id}`));
-	}
 
 	const neededSizes = ['tiny', 'med', 'lg', 'huge', 'grg'];
 

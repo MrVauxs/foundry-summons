@@ -2,9 +2,13 @@
 	"title": "Foundry Summons",
 	"id": "foundry-summons",
 	"description": "A Summoning Module.",
-	"version": "0.0.0",
-	"esmodules": ["index.js"],
-	"styles": ["style.css"],
+	"version": "To Be Replaced",
+	"esmodules": [
+		"index.js"
+	],
+	"styles": [
+		"style.css"
+	],
 	"socket": true,
 	"authors": [
 		{
@@ -18,7 +22,9 @@
 	],
 	"flags": {
 		"hotReload": {
-			"extensions": [".json"]
+			"extensions": [
+				".json"
+			]
 		}
 	},
 	"media": [

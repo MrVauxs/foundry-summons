@@ -6,11 +6,18 @@ import { DocWrapper } from '../packs';
  *
  * @param {boolean} refresh - Redo everything.
  *
+ * @param {boolean} reloadIndex - Update your index. Disabling that makes the function only return the processed index.
+ *
  * @param {Array} packs - Optional array of packs to load. Defaults to all packs in settings.
+ *
  *
  * @returns {Promise<Array>} Returns an array of indexed creatures.
  */
-export default async function loadPacks(refresh = false, packs = game.settings.get(moduleID, 'sources')) {
+export default async function loadPacks(
+	refresh = false,
+	reloadIndex = true,
+	packs = game.settings.get(moduleID, 'sources')
+) {
 	const progress = new Progress({ steps: packs.length });
 
 	const customPackLookup = {};
@@ -20,7 +27,7 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 
 	let index = window.foundrySummons.index ?? [];
 
-	if (refresh) index = [];
+	if (refresh || !reloadIndex) index = [];
 
 	if (index.length > 0) return index;
 
@@ -111,7 +118,7 @@ export default async function loadPacks(refresh = false, packs = game.settings.g
 
 	progress.close(localize('fs.notifications.loadingComplete'));
 
-	window.foundrySummons.index = index;
+	if (reloadIndex) window.foundrySummons.index = index;
 	return index;
 }
 

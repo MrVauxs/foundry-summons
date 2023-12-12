@@ -24,6 +24,7 @@ Built in [Svelte](https://svelte.dev/) using [TyphonJS Framework](https://github
 
 ### Preview
 
+[![EskieMoh's Tutorial Video](http://img.youtube.com/vi/vngjefDFdDY/0.jpg)](http://www.youtube.com/watch?v=vngjefDFdDY)
+
 https://github.com/MrVauxs/foundry-summons/assets/32039708/baa11499-8999-49d8-99a5-1ca2f2f79b3d
 
-![image](https://github.com/MrVauxs/foundry-summons/assets/32039708/889a419d-b5fd-4757-8360-2d73ce07dd5c)

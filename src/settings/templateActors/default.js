@@ -27,20 +27,22 @@ export default async function createBlanks(defaultToken) {
 		blankNPCs = [];
 	}
 
-	if (blankNPCs.length === 0) {
-		Actor.create({
-			name: `Blank NPC`,
-			type: 'npc',
-			img: `icons/svg/cowled.svg`,
-			prototypeToken: {
-				width: 1,
-				height: 1,
-				...defaultToken,
-			},
-			folder: npcFolder.id,
-		}).then((actor) => {
-			blankNPCs.push({ id: actor.id });
-			game.settings.set(moduleID, 'blankNPC', blankNPCs);
+	if (blankNPCs.length < CONFIG.Actor.documentClass.TYPES.length) {
+		CONFIG.Actor.documentClass.TYPES.forEach((type) => {
+			Actor.create({
+				name: `Blank NPC`,
+				type,
+				img: `icons/svg/cowled.svg`,
+				prototypeToken: {
+					width: 1,
+					height: 1,
+					...defaultToken,
+				},
+				folder: npcFolder.id,
+			}).then((actor) => {
+				blankNPCs.push({ id: actor.id });
+				game.settings.set(moduleID, 'blankNPC', blankNPCs);
+			});
 		});
 	}
 

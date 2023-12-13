@@ -16,10 +16,15 @@ export default async function createBlanks(defaultToken) {
 	}
 
 	let blankNPCs = game.settings.get(moduleID, 'blankNPC');
+	const actorTypes = CONFIG.Actor.documentClass.TYPES;
 
 	debug('Available Blank NPCs', blankNPCs);
 
-	if (blankNPCs.length > 1) {
+	// If there are too many actors, start over.
+	if (
+		blankNPCs.length > actorTypes.length ||
+		blankNPCs.filter((blank) => !blank.type || !actorTypes.includes(blank.type)).length
+	) {
 		npcFolder.content.forEach(async (actor) => {
 			await actor.delete();
 		});
@@ -27,10 +32,10 @@ export default async function createBlanks(defaultToken) {
 		blankNPCs = [];
 	}
 
-	if (blankNPCs.length < CONFIG.Actor.documentClass.TYPES.length) {
-		CONFIG.Actor.documentClass.TYPES.forEach((type) => {
+	if (blankNPCs.length < actorTypes.length) {
+		actorTypes.forEach((type) => {
 			Actor.create({
-				name: `Blank NPC`,
+				name: `Blank NPC (${type})`,
 				type,
 				img: `icons/svg/cowled.svg`,
 				prototypeToken: {
@@ -40,7 +45,7 @@ export default async function createBlanks(defaultToken) {
 				},
 				folder: npcFolder.id,
 			}).then((actor) => {
-				blankNPCs.push({ id: actor.id });
+				blankNPCs.push({ id: actor.id, type });
 				game.settings.set(moduleID, 'blankNPC', blankNPCs);
 			});
 		});

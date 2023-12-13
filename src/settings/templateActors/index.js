@@ -1,5 +1,4 @@
 import pf2e from './pf2e.js';
-import mta from './mta.js';
 import defaultBlanks from './default.js';
 import { moduleID } from '../../utils.js';
 
@@ -24,8 +23,6 @@ export async function createBlanks() {
 	switch (game.system.id) {
 		case 'pf2e':
 			return await pf2e(defaultToken);
-		case 'mta':
-			return await mta(defaultToken);
 		default:
 			return await defaultBlanks(defaultToken);
 	}

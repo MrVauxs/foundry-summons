@@ -1,4 +1,4 @@
-import { localize, moduleID, debug } from '../../utils';
+import { moduleID, debug } from '../../utils';
 /**
  * Creates new actors.
  *
@@ -19,8 +19,16 @@ export default async function createBlanks(defaultToken) {
 	debug('Available Blank NPCs', blankNPCs);
 
 	const neededSizes = ['tiny', 'med', 'lg', 'huge', 'grg'];
+	const actorTypes = CONFIG.Actor.documentClass.TYPES;
 
-	if (blankNPCs.length > neededSizes.length) {
+	const allNeededActors = neededSizes
+		.map((size) => {
+			return { size, type: 'npc' };
+		})
+		.concat(actorTypes.filter((x) => x !== 'npc' && x !== 'party' && x !== 'base').map((type) => ({ type })));
+
+	// If there are too many actors, start over.
+	if (blankNPCs.length !== allNeededActors.length) {
 		npcFolder.content.forEach(async (actor) => {
 			await actor.delete();
 		});
@@ -28,54 +36,60 @@ export default async function createBlanks(defaultToken) {
 		blankNPCs = [];
 	}
 
-	if (blankNPCs.length < neededSizes.length) {
-		const message = `Foundry Summons | ${localize(`${moduleID}.notifications.blanks`)}`;
-		debug(message, ui.notifications.info(message));
-
-		// const neededSizes = ['tiny', 'med', 'lg', 'huge', 'grg'];
-		const existingSizes = blankNPCs.map((actor) => actor.size);
-		const togetherNow = [...neededSizes, ...existingSizes];
-
-		const map = new Map();
-		togetherNow.forEach((x) => map.set(x, map.has(x) ? map.get(x) + 1 : 1));
-		const missingSizes = togetherNow.filter((x) => map.get(x) === 1);
-
-		debug('Missing Sizes', missingSizes);
-
-		missingSizes.forEach((size) => {
-			const name = `Blank NPC (${size})`;
-			const img = `icons/svg/cowled.svg`;
-			const width = size === 'tiny' ? 0.5 : size === 'med' ? 1 : size === 'lg' ? 2 : size === 'huge' ? 3 : 4;
-			const height = size === 'tiny' ? 0.5 : size === 'med' ? 1 : size === 'lg' ? 2 : size === 'huge' ? 3 : 4;
+	if (blankNPCs.length < allNeededActors.length) {
+		allNeededActors.forEach((dummy) => {
+			let xy = 1;
+			switch (dummy.size) {
+				case 'tiny':
+					xy = 0.5;
+					break;
+				case 'med':
+					xy = 1;
+					break;
+				case 'lg':
+					xy = 2;
+					break;
+				case 'huge':
+					xy = 3;
+					break;
+				case 'grg':
+					xy = 4;
+					break;
+				default:
+					break;
+			}
 
 			Actor.create({
-				name,
-				type: 'npc',
-				img,
-				size,
+				name: `Blank ${dummy.type.toUpperCase()} ${dummy.size ? `(${dummy.size})` : ''}`,
+				type: dummy.type,
+				img: `icons/svg/cowled.svg`,
+				size: dummy.size,
 				prototypeToken: {
-					width,
-					height,
+					width: xy,
+					height: xy,
 					...defaultToken,
 				},
-				system: {
-					attributes: {
-						hp: {
-							max: 999,
-							value: 999,
-							base: 999,
-							slug: 'hp',
-						},
-					},
-					traits: {
-						size: {
-							value: size,
-						},
-					},
-				},
+				system:
+					dummy.type === 'npc'
+						? {
+								attributes: {
+									hp: {
+										max: 999,
+										value: 999,
+										base: 999,
+										slug: 'hp',
+									},
+								},
+								traits: {
+									size: {
+										value: dummy.size,
+									},
+								},
+						  }
+						: {},
 				folder: npcFolder.id,
 			}).then((actor) => {
-				blankNPCs.push({ id: actor.id, size });
+				blankNPCs.push({ id: actor.id, size: dummy.size, type: dummy.type });
 				game.settings.set(moduleID, 'blankNPC', blankNPCs);
 			});
 		});

@@ -91,7 +91,8 @@ async function summon(data) {
 	// Then we can proceed.
 	let actorName;
 	try {
-		actorName = (await fromUuid(`Actor.${game.settings.get(moduleID, 'blankNPC')[0].id}`)).name;
+		const npcs = game.settings.get(moduleID, 'blankNPC');
+		actorName = fromUuidSync(`Actor.${npcs.find((blank) => blank.type === actorData.type).id}`).name;
 	} catch (error) {
 		ui.notifications.error(`Foundry Summons | ${localize('fs.notifications.error.blanks')}`);
 	}
@@ -205,15 +206,11 @@ async function summon(data) {
 
 	switch (game.system.id) {
 		case 'pf2e': {
-			const futureActorName = (
-				await fromUuid(
-					`Actor.${
-						game.settings
-							.get(moduleID, 'blankNPC')
-							.find((blank) => (actor.size === 'sm' ? blank.size === 'med' : blank.size === actor.size))
-							?.id
-					}`
-				)
+			const npcs = game.settings.get(moduleID, 'blankNPC');
+			const futureActorName = fromUuidSync(
+				`Actor.${
+					npcs.find((blank) => (actor.size === 'sm' ? blank.size === 'med' : blank.size === actor.size))?.id
+				}`
 			)?.name;
 
 			if (futureActorName) actorName = futureActorName;

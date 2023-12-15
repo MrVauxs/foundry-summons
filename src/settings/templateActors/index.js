@@ -8,6 +8,7 @@ import { moduleID } from '../../utils.js';
  * @returns {void} Creates the blank actors, ready for summoning.
  */
 export async function createBlanks() {
+	if (!game.user.isGM) return;
 	const blankNPCs = await game.settings.get(moduleID, 'blankNPC');
 	// Check if all Actors exist. If not, remove fakers.
 	if (blankNPCs.filter((x) => fromUuidSync(`Actor.${x.id}`)).length !== blankNPCs.length) {

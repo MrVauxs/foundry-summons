@@ -16,9 +16,10 @@ export default async function createBlanks(defaultToken) {
 	}
 
 	let blankNPCs = game.settings.get(moduleID, 'blankNPC');
-	const actorTypes = CONFIG.Actor.documentClass.TYPES;
+	const actorTypes = CONFIG.Actor.documentClass.TYPES.filter((type) => type !== 'base');
 
 	debug('Available Blank NPCs', blankNPCs);
+	debug('Available Actor Types', actorTypes);
 
 	// If there are too many actors, start over.
 	if (

@@ -19,7 +19,7 @@ export default async function createBlanks(defaultToken) {
 	debug('Available Blank NPCs', blankNPCs);
 
 	const neededSizes = ['tiny', 'med', 'lg', 'huge', 'grg'];
-	const actorTypes = CONFIG.Actor.documentClass.TYPES;
+	const actorTypes = CONFIG.Actor.documentClass.TYPES.filter((type) => type !== 'base');
 
 	const allNeededActors = neededSizes
 		.map((size) => {

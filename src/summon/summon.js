@@ -213,7 +213,7 @@ async function summon(data) {
 				}`
 			)?.name;
 
-			if (futureActorName) actorName = futureActorName;
+			if (futureActorName && actorData.type === 'npc') actorName = futureActorName;
 
 			if (actorData.uuid.startsWith('Compendium') && data.summonerTokenDocument?.actorId) {
 				updates.actor.system.details.alliance = (

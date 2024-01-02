@@ -197,7 +197,7 @@ async function summon(data) {
 				updates: _updates,
 				iteration: _iteration,
 				sourceData: data,
-				animated: false,
+				animated: data.noAnimation ?? false,
 			});
 		},
 	};

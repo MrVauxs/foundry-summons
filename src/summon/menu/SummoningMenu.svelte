@@ -43,7 +43,7 @@
 		data.creatures = loadPacks();
 	} else if (data.creatures instanceof CompendiumCollection) {
 		data.creatures = loadPacks(false, false, [data.creatures.metadata]);
-	} else if (data.creatures.some((pack) => pack instanceof CompendiumCollection)) {
+	} else if (Array.isArray(data.creatures) && data.creatures.some((pack) => pack instanceof CompendiumCollection)) {
 		data.creatures = new Promise((resolveOuter) => {
 			data.creatures = data.creatures.map(async (pack) => {
 				if (pack instanceof CompendiumCollection) {

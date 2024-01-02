@@ -11,6 +11,8 @@ An all-in-one solution to all your summoning needs with NO need to import Actors
 Easily expandable with Hooks, and system-inclusive. Should work on any system.
 Just grab the **macro** from the compendium and start summoning!
 
+### **If you want more information, see the [wiki](https://github.com/MrVauxs/foundry-summons/wiki/Macro-Arguments)!**
+
 Built in [Svelte](https://svelte.dev/) using [TyphonJS Framework](https://github.com/typhonjs-fvtt-lib) for Foundry.
 
 ### Hooks

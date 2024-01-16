@@ -113,18 +113,6 @@ async function summon(data) {
 		token = { flags: {} };
 	}
 
-	Object.assign(token.flags, {
-		'foundry-summons': {
-			scrollingText: game.settings.get('core', 'scrollingStatusText'),
-			bloodsplatter: game.modules.get('splatter')?.active
-				? game.settings.get('splatter', 'enableBloodsplatter')
-				: null,
-			'token-mold': game.modules.get('token-mold')?.active
-				? game.settings.get('Token-Mold', 'everyone').name.use
-				: null,
-		},
-	});
-
 	const updates = {
 		token: token.toObject ? token.toObject() : { flags: {} },
 		actor: actor.toObject ? actor.toObject() : { flags: {} },
@@ -134,6 +122,16 @@ async function summon(data) {
 	foundry.utils.mergeObject(updates, data.updates);
 
 	updates.token.actorData = { ownership: { [data.userId]: 3 } };
+
+	updates.token.flags['foundry-summons'] = {
+		scrollingText: game.settings.get('core', 'scrollingStatusText'),
+		bloodsplatter: game.modules.get('splatter')?.active
+			? game.settings.get('splatter', 'enableBloodsplatter')
+			: null,
+		'token-mold': game.modules.get('token-mold')?.active
+			? game.settings.get('Token-Mold', 'everyone').name.use
+			: null,
+	};
 
 	const callbacks = {
 		pre: async function (_location, _updates) {

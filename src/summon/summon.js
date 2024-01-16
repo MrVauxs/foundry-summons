@@ -103,6 +103,10 @@ async function summon(data) {
 	let actor = actorData;
 	let token = actor.prototypeToken;
 
+	// Fix wildcard tokens.
+	const tokenImages = await actor.getTokenImages();
+	token.texture.src = tokenImages[Math.floor(Math.random() * tokenImages.length)];
+
 	if (!actorData.uuid.startsWith('Compendium')) {
 		actorName = actorData.name;
 		actor = {};

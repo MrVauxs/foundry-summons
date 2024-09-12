@@ -106,77 +106,6 @@ async function summon(data) {
 			: null,
 	};
 
-	const callbacks = {
-		pre: async function (_location, _updates) {
-			mergeObject(_updates, {
-				token: {
-					alpha: 0,
-				},
-			});
-			// Remove scrolling text if effects or hp are modified.
-			await game.settings.set('core', 'scrollingStatusText', false);
-
-			// If hp is modified, don't splatter all over the token.
-			if (game.modules.get('splatter')?.active) {
-				await game.settings.set('splatter', 'enableBloodsplatter', false);
-			}
-
-			// If the token is modified, don't change the name.
-			if (game.modules.get('token-mold')?.active) {
-				await game.settings.set('Token-Mold', 'everyone', {
-					...game.settings.get('Token-Mold', 'everyone'),
-					...{ name: { use: false } },
-				});
-			}
-
-			Hooks.callAll('fs-preSummon', { location: _location, updates: _updates, sourceData: data });
-		},
-		post: async function (_location, _spawnedTokenDoc, _updates, _iteration) {
-			// Remove scrolling text if effects or hp are modified.
-			if (updates.token.flags['foundry-summons']?.scrollingText) {
-				await game.settings.set('core', 'scrollingStatusText', true);
-			}
-
-			// If hp is modified, don't splatter all over the token.
-			if (updates.token.flags['foundry-summons']?.bloodsplatter) {
-				await game.settings.set('splatter', 'enableBloodsplatter', true);
-			}
-
-			// If the token is modified, don't change the name.
-			if (updates.token.flags['foundry-summons']?.tokenmold) {
-				await game.settings.set('Token-Mold', 'everyone', {
-					...game.settings.get('Token-Mold', 'everyone'),
-					...{ name: { use: true } },
-				});
-			}
-
-			if (!data.noAnimation) {
-				Hooks.once('fs-postSummon', (postSummon) => {
-					const { tokenDoc } = postSummon;
-					if (!postSummon.animated) {
-						postSummon.animated = true;
-						setTimeout(() => {
-							tokenDoc.update({
-								alpha: 1,
-							});
-						}, 250);
-
-						console.log('Foundry Summons | Used default summoning animation.');
-					}
-				});
-			}
-
-			Hooks.callAll('fs-postSummon', {
-				location: _location,
-				tokenDoc: _spawnedTokenDoc,
-				updates: _updates,
-				iteration: _iteration,
-				sourceData: data,
-				animated: data.noAnimation ?? false,
-			});
-		},
-	};
-
 	const options = { count: data.amount, flags: data.flags };
 
 	switch (game.system.id) {
@@ -199,17 +128,7 @@ async function summon(data) {
 	const x = data.location.x; //  - data.location.distance * canvas.grid.size
 	const y = data.location.y;
 
-	debug(
-		`Summoning${options.count ? ` ${options.count}` : ''}`,
-		actorData.name,
-		'at',
-		x,
-		y,
-		'with',
-		updates,
-		callbacks,
-		options
-	);
+	debug(`Summoning${options.count ? ` ${options.count}` : ''}`, actorData.name, 'at', x, y, 'with', updates, options);
 
 	const portal = new Portal()
 		.addCreature(actorData.uuid, { updateData: updates, count: options.count ?? 1 })
@@ -237,17 +156,6 @@ async function summon(data) {
 	}
 
 	try {
-		// const results = warpgate.spawnAt(
-		// 	{
-		// 		x,
-		// 		y,
-		// 	},
-		// 	actorName,
-		// 	updates,
-		// 	callbacks,
-		// 	options
-		// );
-
 		const results = portal.spawn();
 
 		results.then(() => {
@@ -262,7 +170,6 @@ async function summon(data) {
 		console.log(`Foundry Summons | ${localize('fs.notifications.error.summon')}`, {
 			actorName: actorData.name,
 			updates,
-			callbacks,
 			options,
 		});
 		throw Error(error);

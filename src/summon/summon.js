@@ -140,7 +140,7 @@ async function summon(data) {
 	) {
 		// If the GM has auto accept disabled, we need to ask them if they want to summon the creature.
 		try {
-			portal.dialog({
+			await portal.dialog({
 				spawn: false,
 				multipleChoice: false,
 				title: localize(`fs.dialog.title`, {

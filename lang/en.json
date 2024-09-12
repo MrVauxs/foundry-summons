@@ -35,15 +35,14 @@
 			"accept": "Accept"
 		},
 		"notifications": {
-			"blanks": "Missing Blank Actors. Creating them…",
 			"loadingPack": "Loading Pack {pack}",
 			"loadingComplete": "Loading Complete",
 			"error": {
 				"summon": "An error has occured while summoning a creature. Please check the console!",
-				"blanks": "Could not find the default blank NPC. Please refresh to generate one!",
 				"loadingPack": "Error loading pack \"{pack}\", does it exist?",
 				"permission": "You don't have permission to do that. How did you run this function?",
-				"warpgate": "Warpgate is a REQUIRED dependency of Foundry Summons, please enable it!",
+				"portal-lib": "Portal is a REQUIRED dependency of Foundry Summons, please enable it!",
+				"socketlib": "Socketlib is a REQUIRED dependency of Foundry Summons, please enable it!",
 				"docType": "No document wrapper found for {docType}!."
 			}
 		},

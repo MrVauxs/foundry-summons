@@ -1,7 +1,7 @@
 import { debug, localize, moduleID } from '../utils';
 import { openMenu } from './menu/SummoningMenu.js';
 
-/**
+/*
  * ============================================
  *    The Whole Idea So I Don't Get F' Lost
  * ============================================
@@ -35,11 +35,21 @@ import { openMenu } from './menu/SummoningMenu.js';
  * 			- User
  */
 
+/** Foundry socket variable */
+let fs_socket;
+
+Hooks.once('socketlib.ready', () => {
+	fs_socket = socketlib.registerModule(moduleID);
+	fs_socket.register('summon', summon);
+});
+
 Hooks.on('ready', () => {
-	if (!game.modules.get('warpgate')?.active) {
-		return ui.notifications.error(localize('fs.notifications.error.warpgate'));
+	if (!game.modules.get('portal-lib')?.active) {
+		return ui.notifications.error(localize('fs.notifications.error.portal-lib'));
 	}
-	warpgate.event.watch('fs-summon', summon, warpgate.util.isFirstGM);
+	if (!game.modules.get('socketlib')?.active) {
+		return ui.notifications.error(localize('fs.notifications.error.socketlib'));
+	}
 });
 
 /**
@@ -83,23 +93,10 @@ async function summon(data) {
 			if (data.location?.constructor?.name.includes('MeasuredTemplate')) {
 				data.location.delete();
 			}
-			warpgate.event.notify('fs-summonNotifyPlayer', { ...data, tokenIds: false });
-			return;
+			return { ...data, tokenIds: false };
 		}
 	}
 
-	// Then we can proceed.
-	let actorName;
-	try {
-		const npcs = game.settings.get(moduleID, 'blankNPC');
-		actorName = fromUuidSync(`Actor.${npcs.find((blank) => blank.type === actorData.type).id}`).name;
-	} catch (error) {
-		ui.notifications.error(`Foundry Summons | ${localize('fs.notifications.error.blanks')}`);
-	}
-	if (!actorName) {
-		ui.notifications.error(`Foundry Summons | ${localize('fs.notifications.error.blanks')}`);
-		return;
-	}
 	let actor = actorData;
 	let token = actor.prototypeToken;
 
@@ -108,7 +105,6 @@ async function summon(data) {
 	token.texture.src = tokenImages[Math.floor(Math.random() * tokenImages.length)];
 
 	if (!actorData.uuid.startsWith('Compendium')) {
-		actorName = actorData.name;
 		actor = {};
 		token = { flags: {} };
 	}
@@ -121,7 +117,7 @@ async function summon(data) {
 	foundry.utils.mergeObject(updates, actorData.updates ?? {});
 	foundry.utils.mergeObject(updates, data.updates);
 
-	updates.token.actorData = { ownership: { [data.userId]: 3 } };
+	updates.actor.ownership = { [data.userId]: 3 };
 
 	updates.token.flags['foundry-summons'] = {
 		scrollingText: game.settings.get('core', 'scrollingStatusText'),
@@ -204,19 +200,10 @@ async function summon(data) {
 		},
 	};
 
-	const options = { duplicates: data.amount, flags: data.flags };
+	const options = { count: data.amount, flags: data.flags };
 
 	switch (game.system.id) {
 		case 'pf2e': {
-			const npcs = game.settings.get(moduleID, 'blankNPC');
-			const futureActorName = fromUuidSync(
-				`Actor.${
-					npcs.find((blank) => (actor.size === 'sm' ? blank.size === 'med' : blank.size === actor.size))?.id
-				}`
-			)?.name;
-
-			if (futureActorName && actorData.type === 'npc') actorName = futureActorName;
-
 			if (actorData.uuid.startsWith('Compendium') && data.summonerTokenDocument?.actorId) {
 				updates.actor.system.details.alliance = (
 					await fromUuid(`Actor.${data.summonerTokenDocument?.actorId}`)
@@ -224,8 +211,6 @@ async function summon(data) {
 			}
 			// Delete token width and height to use the default size of
 			// our tokens because PF2e Bestiaries rely a bit TOO MUCH on auto-scaling.
-			updates.token.width = undefined;
-			updates.token.height = undefined;
 			break;
 		}
 	}
@@ -238,8 +223,8 @@ async function summon(data) {
 	const y = data.location.y;
 
 	debug(
-		`Summoning${options.duplicates ? ` ${options.duplicates}` : ''}`,
-		actorName,
+		`Summoning${options.count ? ` ${options.count}` : ''}`,
+		actorData.name,
 		'at',
 		x,
 		y,
@@ -250,16 +235,21 @@ async function summon(data) {
 	);
 
 	try {
-		const results = warpgate.spawnAt(
-			{
-				x,
-				y,
-			},
-			actorName,
-			updates,
-			callbacks,
-			options
-		);
+		// const results = warpgate.spawnAt(
+		// 	{
+		// 		x,
+		// 		y,
+		// 	},
+		// 	actorName,
+		// 	updates,
+		// 	callbacks,
+		// 	options
+		// );
+
+		const results = new Portal()
+			.addCreature(actorData.uuid, { updateData: updates, count: options.count ?? 1 })
+			.setLocation({ x, y })
+			.spawn();
 
 		results.then(() => {
 			if (data.location?.constructor?.name.includes('MeasuredTemplate')) {
@@ -267,13 +257,11 @@ async function summon(data) {
 			}
 		});
 
-		warpgate.event.notify('fs-summonNotifyPlayer', { ...data, tokenIds: await results });
-
-		return results;
+		return { ...data, tokenIds: await results };
 	} catch (error) {
 		ui.notifications.error(`Foundry Summons | ${localize('fs.notifications.error.summon')}`);
 		console.log(`Foundry Summons | ${localize('fs.notifications.error.summon')}`, {
-			actorName,
+			actorName: actorData.name,
 			updates,
 			callbacks,
 			options,
@@ -289,3 +277,5 @@ window.foundrySummons = {
 	summon,
 	debug,
 };
+
+export { fs_socket };

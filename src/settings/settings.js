@@ -1,7 +1,6 @@
 import { TJSGameSettings } from '@typhonjs-fvtt/svelte-standard/store';
 import Svelttings from './settings.svelte';
 import { moduleID } from '../utils';
-import { createBlanks } from './templateActors/index.js';
 import { registerSystemSettings, selectDefaultSources, setDefaultIndexFields } from './systemSpecific';
 import loadPacks from '../summon/menu/loadPacks';
 
@@ -17,17 +16,6 @@ Hooks.once('init', () => {
 			name: 'foundry-summons.settings.debug.title',
 			type: Boolean,
 			default: false,
-		},
-	});
-
-	gameSettings.register({
-		namespace: moduleID,
-		key: 'blankNPC',
-		options: {
-			scope: 'world',
-			config: false,
-			type: Array,
-			default: [],
 		},
 	});
 
@@ -118,7 +106,6 @@ Hooks.once('ready', () => {
 	}
 
 	setDefaultIndexFields();
-	createBlanks();
 
 	gameSettings.getStore('sources').subscribe(() => {
 		if (window.foundrySummons?.index?.length) {

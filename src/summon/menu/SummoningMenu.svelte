@@ -10,10 +10,12 @@
 	import defaultSorting from './defaultSorting.js';
 	import { getContext } from 'svelte';
 	import { DocWrapper } from '../packs.js';
+	import { fs_socket } from '../summon.js';
 	const { application } = getContext('#external');
 
 	export let elementRoot;
 	export let ogData;
+	export let dataCallback;
 
 	let data = foundry.utils.mergeObject(
 		{
@@ -108,57 +110,26 @@
 
 	async function send() {
 		let location = data.location;
+		const portal = new Portal();
 
 		if (!location) {
 			const importedToken = (await $creature.loadDocument()).prototypeToken;
 
-			const crosshairConfig = {
-				label: importedToken.name,
-				interval: importedToken.height < 1 ? 4 : importedToken.height % 2 === 0 ? 1 : -1,
-				lockSize: true,
-				radius: importedToken.width,
-				drawOutline: debug() || !game.modules.get('sequencer')?.active,
-				drawIcon: debug() || !game.modules.get('sequencer')?.active,
-				icon: importedToken.texture.src,
-			};
-
-			let crosshairShow;
-
-			if (game.modules.get('sequencer')?.active)
-				crosshairShow = {
-					show: async (crosshair) => {
-						new Sequence('Foundry Summons')
-							.effect()
-							.file(importedToken?.texture?.src ?? $creature.img)
-							.attachTo(crosshair)
-							.persist()
-							.scaleToObject(importedToken.height * importedToken.texture.scaleX)
-							.opacity(0.5)
-							.play();
-					},
-				};
-
 			application.minimize();
-			const crosshairs = await warpgate.crosshairs.show(crosshairConfig, crosshairShow);
-			if (crosshairs.cancelled) {
+			location = await portal
+				.size((importedToken?.width ?? 1) * canvas.scene.grid.distance)
+				.texture('icons/svg/target.svg')
+				.pick();
+
+			if (!location) {
 				application.maximize();
 				return;
 			}
-
-			const template = (
-				await canvas.scene.createEmbeddedDocuments('MeasuredTemplate', [
-					{
-						...crosshairs,
-						distance: (importedToken.height / 2) * canvas.scene.grid.distance,
-					},
-				])
-			)[0];
-
-			location = { ...template.toObject(), docName: 'MeasuredTemplate', uuid: template.uuid };
 		}
 
 		const options = {
 			player: game.user.id,
+			userId: game.user.id,
 			summonerTokenDocument: $token?.document,
 			creatureActor: $creature.serialize(),
 			amount: $amount,
@@ -167,8 +138,9 @@
 			flags: data.flags ?? {},
 			noAnimation: data.options.noAnimation,
 		};
+
 		debug('Sending', options);
-		warpgate.event.notify('fs-summon', options);
+		dataCallback(await fs_socket.executeAsGM('summon', options));
 	}
 
 	if (data.options.autoPick && data.creatures.length === 1) {

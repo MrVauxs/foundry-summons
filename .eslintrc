@@ -8,7 +8,8 @@
 	],
 	"plugins": ["prettier"],
 	"globals": {
-		"warpgate": "readonly",
+		"Portal": "readonly",
+		"socketlib": "readonly",
 		"fromUuid": "readonly",
 		"fromUuidSync": "readonly"
 	},

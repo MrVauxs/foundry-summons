@@ -164,7 +164,7 @@ async function summon(data) {
 			}
 		});
 
-		return { ...data, tokenIds: await results };
+		return { ...data, tokenIds: (await results).map((tok) => tok._id) };
 	} catch (error) {
 		ui.notifications.error(`Foundry Summons | ${localize('fs.notifications.error.summon')}`);
 		console.log(`Foundry Summons | ${localize('fs.notifications.error.summon')}`, {

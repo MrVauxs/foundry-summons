@@ -74,29 +74,6 @@ async function summon(data) {
 
 	if (data.location.docName === 'MeasuredTemplate') data.location = await fromUuid(data.location.uuid);
 
-	if (
-		game.settings.get(moduleID, 'debug') ||
-		(!game.settings.get(moduleID, 'autoAccept') && !(game.user.id === data.userId))
-	) {
-		// If the GM has auto accept disabled, we need to ask them if they want to summon the creature.
-		const summoning = await Dialog.confirm({
-			title: localize('fs.dialog.title'),
-			content: localize('fs.dialog.request', {
-				player: game.users.get(data.userId).name,
-				amount: data.amount,
-				creature: actorData.name,
-			}),
-			label: localize('fs.dialog.accept'),
-		});
-
-		if (!summoning) {
-			if (data.location?.constructor?.name.includes('MeasuredTemplate')) {
-				data.location.delete();
-			}
-			return { ...data, tokenIds: false };
-		}
-	}
-
 	let actor = actorData;
 	let token = actor.prototypeToken;
 
@@ -234,6 +211,31 @@ async function summon(data) {
 		options
 	);
 
+	const portal = new Portal()
+		.addCreature(actorData.uuid, { updateData: updates, count: options.count ?? 1 })
+		.setLocation({ x, y });
+
+	if (
+		game.settings.get(moduleID, 'debug') ||
+		(!game.settings.get(moduleID, 'autoAccept') && !(game.user.id === data.userId))
+	) {
+		// If the GM has auto accept disabled, we need to ask them if they want to summon the creature.
+		try {
+			portal.dialog({
+				spawn: false,
+				multipleChoice: false,
+				title: localize(`fs.dialog.title`, {
+					player: game.users.get(data.userId).name,
+				}),
+			});
+		} catch (err) {
+			if (data.location?.constructor?.name.includes('MeasuredTemplate')) {
+				data.location.delete();
+			}
+			return { ...data, tokenIds: false };
+		}
+	}
+
 	try {
 		// const results = warpgate.spawnAt(
 		// 	{
@@ -246,10 +248,7 @@ async function summon(data) {
 		// 	options
 		// );
 
-		const results = new Portal()
-			.addCreature(actorData.uuid, { updateData: updates, count: options.count ?? 1 })
-			.setLocation({ x, y })
-			.spawn();
+		const results = portal.spawn();
 
 		results.then(() => {
 			if (data.location?.constructor?.name.includes('MeasuredTemplate')) {

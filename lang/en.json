@@ -30,8 +30,7 @@
 			"summonAndClose": "Summon {number} {creature} and Close"
 		},
 		"dialog": {
-			"title": "Summoning Request",
-			"request": "{player} wants to summon {amount} {creature}. Do you accept?",
+			"title": "Summoning Request from {player}",
 			"accept": "Accept"
 		},
 		"notifications": {

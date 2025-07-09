@@ -1,4 +1,4 @@
-# Due to V12 and Warpgate's disappearance, this module currently does not work. It will be rewritten from scratch eventually, but other projects (such as a replacement to PF2e Animations) have taken priority.
+# V12 and V13 compatible version is now available at [Foundry Summons 2](https://github.com/MrVauxs/foundry-summons-2) repo!
 # Foundry Summons
 
 ![](https://img.shields.io/endpoint?url=https%3A%2F%2Ffoundryshields.com%2Fversion%3Fstyle%3Dflat%26url%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2FMrVauxs%2Ffoundry-summons%2Fmain%2Fmodule.json)
